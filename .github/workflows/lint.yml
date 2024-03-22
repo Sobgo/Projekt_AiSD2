@@ -23,7 +23,7 @@ jobs:
           # only 'update' a single comment in a pull request's thread.
           thread-comments: ${{ github.event_name == 'pull_request' && 'update' }}
           step-summary: true
-          files-changed-only: true
+          files-changed-only: false
       - name: Fail fast?!
         if: steps.linter.outputs.checks-failed > 0
         run: exit 1
