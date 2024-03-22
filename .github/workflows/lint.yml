@@ -13,6 +13,7 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
+      - uses: threeal/cmake-action@v1.3.0
       - uses: cpp-linter/cpp-linter-action@v2
         id: linter
         env:
