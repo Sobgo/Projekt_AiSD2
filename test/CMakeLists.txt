@@ -11,8 +11,9 @@ list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 
 add_executable(tests test.cpp)
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
-target_link_libraries(tests PRIVATE test_lib)
+target_link_libraries(tests PRIVATE convex_hull)
 
 include(CTest)
 include(Catch)
 catch_discover_tests(tests)
+
