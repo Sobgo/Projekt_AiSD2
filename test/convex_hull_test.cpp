@@ -21,7 +21,7 @@ SCENARIO("Convex Hull is calculated correctly") {
 			vector<Point> hull = convex_hull(in);
 
 			THEN("It is a subset of the input") {
-				REQUIRE(is_subset(in, hull));
+				REQUIRE(is_subset(hull, in));
 			}
 
 			THEN("It is convex") { REQUIRE(is_convex(hull)); }
@@ -71,9 +71,10 @@ SCENARIO("Convex Hull is calculated correctly") {
 		WHEN("Convex Hull is calculated") {
 			vector<Point> hull = convex_hull(in);
 
-			THEN("It is the same set") {
-				REQUIRE(hull.size() == in.size());
+			THEN("The hull contains only the first and last points") {
+				REQUIRE(hull.size() == 2);
 				REQUIRE(is_subset(hull, in));
+				REQUIRE(find(hull.begin(), hull.end(), in[1]) == hull.end());
 			}
 		}
 	}
@@ -84,9 +85,10 @@ SCENARIO("Convex Hull is calculated correctly") {
 		WHEN("Convex Hull is calculated") {
 			vector<Point> hull = convex_hull(in);
 
-			THEN("It is the same set") {
-				REQUIRE(hull.size() == in.size());
+			THEN("The hull contains only the first and last points") {
+				REQUIRE(hull.size() == 2);
 				REQUIRE(is_subset(hull, in));
+				REQUIRE(find(hull.begin(), hull.end(), in[1]) == hull.end());
 			}
 		}
 	}
@@ -97,9 +99,10 @@ SCENARIO("Convex Hull is calculated correctly") {
 		WHEN("Convex Hull is calculated") {
 			vector<Point> hull = convex_hull(in);
 
-			THEN("It is the same set") {
-				REQUIRE(hull.size() == in.size());
+			THEN("The hull contains only the first and last points") {
+				REQUIRE(hull.size() == 2);
 				REQUIRE(is_subset(hull, in));
+				REQUIRE(find(hull.begin(), hull.end(), in[1]) == hull.end());
 			}
 		}
 	}
@@ -124,10 +127,8 @@ SCENARIO("Convex Hull is calculated correctly") {
 				vector<Point> hull = convex_hull(in_vec);
 
 				THEN("It is a subset of the input") {
-					REQUIRE(is_subset(in_vec, hull));
+					REQUIRE(is_subset(hull, in_vec));
 				}
-
-				THEN("It has at least 3 points") { REQUIRE(hull.size() >= 3); }
 
 				THEN("It is convex") { REQUIRE(is_convex(hull)); }
 
@@ -145,11 +146,12 @@ SCENARIO("Convex Hull is calculated correctly") {
 #define y second
 
 // O(nlogn)
-bool is_subset(vector<Point> a, vector<Point> b) {
-	sort(a.begin(), a.end());
-	sort(b.begin(), b.end());
+// checks if A is a subset of B
+bool is_subset(vector<Point> A, vector<Point> B) {
+	sort(A.begin(), A.end());
+	sort(B.begin(), B.end());
 
-	return includes(a.begin(), a.end(), b.begin(), b.end());
+	return includes(B.begin(), B.end(), A.begin(), A.end());
 }
 
 // O(n)
