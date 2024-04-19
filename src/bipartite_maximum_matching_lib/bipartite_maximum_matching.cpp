@@ -33,7 +33,7 @@ std::pair<intmax_t, std::vector<std::vector<intmax_t>>> maxflow(std::vector<std:
 	auto flow = std::vector<std::vector<intmax_t>>(G.size(), std::vector<intmax_t>(G[0].size()));
 	uintmax_t max_flow = 0;
 
-	intmax_t new_flow;
+	intmax_t new_flow = 0;
 	while ((new_flow = bfs(s, t, G, parent)) > 0) {
 		max_flow += new_flow;
 		size_t current = t;
@@ -56,10 +56,11 @@ std::pair<intmax_t, std::vector<std::vector<intmax_t>>> maxflow(std::vector<std:
  * @param pairs: Pairs of connected verticies. Indexing in each partition is separate.
  */
 std::vector<std::pair<size_t, size_t>> bipartite_maximum_matching(const std::vector<std::pair<size_t, size_t>> &pairs) {
-	if (pairs.size() < 1) {
+	if (pairs.empty()) {
 		return {};
 	}
-	size_t max_left = 0, max_right = 0;
+	size_t max_left = 0;
+	size_t max_right = 0;
 	for (const auto &p : pairs) {
 		max_left = std::max(max_left, p.first);
 		max_right = std::max(max_right, p.second);
@@ -92,7 +93,7 @@ std::vector<std::pair<size_t, size_t>> bipartite_maximum_matching(const std::vec
 	for (size_t i = 0; i < left_num; i++) {
 		for (size_t j = 0; j < right_num; j++) {
 			if (flow_result.second[i][left_num + j] > 0) {
-				result.push_back({i, j});
+				result.emplace_back(i, j);
 			}
 		}
 	}
