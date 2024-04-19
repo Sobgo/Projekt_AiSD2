@@ -1,2 +1,1 @@
 add_library(bipartite_maximum_matching bipartite_maximum_matching.cpp)
-target_include_directories(test_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

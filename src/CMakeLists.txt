@@ -1,2 +1,1 @@
-add_subdirectory(test_lib)
 add_subdirectory(bipartite_maximum_matching_lib)
