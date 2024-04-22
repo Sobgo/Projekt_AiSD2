@@ -3,37 +3,40 @@
 
 #include "../src/bipartite_maximum_matching_lib/bipartite_maximum_matching.h"
 
-bool is_maximum_matching(const std::vector<std::pair<size_t, size_t>> &matching, const std::vector<std::pair<size_t, size_t>> &edges);
+// we want maximum matching but it's hard to check easily
+bool is_maximal_matching(const std::vector<std::pair<size_t, size_t>> &matching, const std::vector<std::pair<size_t, size_t>> &edges);
 
 TEST_CASE("bipartite_maximum_matching empty", "[bipartite_maximum_matching]") {
 	std::vector<std::pair<size_t, size_t>> in = {};
 	auto result = bipartite_maximum_matching(in);
-	REQUIRE(is_maximum_matching(result, in));
+	REQUIRE(is_maximal_matching(result, in));
 }
 
 TEST_CASE("bipartite_maximum_matching 1 pair", "[bipartite_maximum_matching]") {
 	std::vector<std::pair<size_t, size_t>> in = {{0, 0}};
 	auto result = bipartite_maximum_matching(in);
-	REQUIRE(is_maximum_matching(result, in));
+	REQUIRE(is_maximal_matching(result, in));
 }
 
 TEST_CASE("bipartite_maximum_matching 1 pair sparse", "[bipartite_maximum_matching]") {
 	std::vector<std::pair<size_t, size_t>> in = {{100, 1000}};
 	auto result = bipartite_maximum_matching(in);
-	REQUIRE(is_maximum_matching(result, in));
+	REQUIRE(is_maximal_matching(result, in));
 }
 
 TEST_CASE("bipartite_maximum_matching lista3zad2", "[bipartite_maximum_matching]") {
 	std::vector<std::pair<size_t, size_t>> in = {{0, 0}, {0, 1}, {0, 2}, {0, 3}, {0, 4}, {1, 1},
 	                                             {1, 4}, {2, 1}, {2, 2}, {3, 3}, {4, 2}, {4, 3}};
 	auto result = bipartite_maximum_matching(in);
-	REQUIRE(is_maximum_matching(result, in));
+	REQUIRE(is_maximal_matching(result, in));
 }
 
 TEST_CASE("bipartite_maximum_matching lista3zad1", "[bipartite_maximum_matching]") {
 	std::vector<std::pair<size_t, size_t>> in = {{0, 0}, {0, 1}, {1, 2}, {2, 1}, {2, 2}, {2, 4}, {2, 5}, {3, 3}, {3, 5}, {4, 2}, {4, 4}};
+	std::vector<std::pair<size_t, size_t>> out = {{0, 0}, {1, 2}, {2, 1}, {3, 3}, {4, 4}};
 	auto result = bipartite_maximum_matching(in);
-	REQUIRE(is_maximum_matching(result, in));
+	REQUIRE(result == out);
+	REQUIRE(is_maximal_matching(result, in));
 }
 
 TEST_CASE("bipartite_maximum_matching medium", "[bipartite_maximum_matching]") {
@@ -123,7 +126,7 @@ TEST_CASE("bipartite_maximum_matching medium", "[bipartite_maximum_matching]") {
 	    {42, 6},   {9, 89},   {22, 35},  {92, 53}, {97, 14},  {32, 36},  {99, 14},  {89, 15}, {85, 51}, {61, 62}, {43, 42},  {12, 70},
 	    {62, 82},  {27, 49},  {24, 9},   {96, 84}};
 	auto result = bipartite_maximum_matching(in);
-	REQUIRE(is_maximum_matching(result, in));
+	REQUIRE(is_maximal_matching(result, in));
 }
 
 TEST_CASE("bipartite_maximum_matching large", "[bipartite_maximum_matching]") {
@@ -357,10 +360,10 @@ TEST_CASE("bipartite_maximum_matching large", "[bipartite_maximum_matching]") {
 	    {181, 57},  {158, 148}, {98, 143},  {356, 194}, {341, 473}, {259, 176}, {173, 135}, {425, 134}, {132, 376}, {371, 376}, {140, 137},
 	    {109, 270}, {80, 159},  {233, 115}};
 	auto result = bipartite_maximum_matching(in);
-	REQUIRE(is_maximum_matching(result, in));
+	REQUIRE(is_maximal_matching(result, in));
 }
 
-bool is_maximum_matching(const std::vector<std::pair<size_t, size_t>> &matching, const std::vector<std::pair<size_t, size_t>> &edges) {
+bool is_maximal_matching(const std::vector<std::pair<size_t, size_t>> &matching, const std::vector<std::pair<size_t, size_t>> &edges) {
 	size_t left_num = 0;
 	size_t right_num = 0;
 	for (auto &pair : matching) {
