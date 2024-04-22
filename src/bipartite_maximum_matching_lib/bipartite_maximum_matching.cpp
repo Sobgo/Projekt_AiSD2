@@ -5,14 +5,14 @@
 #include <optional>
 #include <queue>
 
-intmax_t bfs(size_t s, size_t t, std::vector<std::vector<intmax_t>> &G, std::vector<std::optional<size_t>> &parent) {
+int_fast8_t bfs(size_t s, size_t t, std::vector<std::vector<int_fast8_t>> &G, std::vector<std::optional<size_t>> &parent) {
 	std::queue<std::pair<int, int>> q;
 	parent.assign(parent.size(), std::nullopt);
-	q.push({s, std::numeric_limits<int>::max()});
-	intmax_t new_flow = 0;
+	q.push({s, std::numeric_limits<int_fast8_t>::max()});
+	int_fast8_t new_flow = 0;
 	while (!q.empty()) {
 		size_t current = q.front().first;
-		intmax_t current_flow = q.front().second;
+		int_fast8_t current_flow = q.front().second;
 		q.pop();
 		for (size_t i = 0; i < G[current].size(); i++) {
 			if (G[current][i] > 0 && !parent[i] && i != s) {
@@ -28,14 +28,12 @@ intmax_t bfs(size_t s, size_t t, std::vector<std::vector<intmax_t>> &G, std::vec
 	return new_flow;
 }
 
-std::pair<intmax_t, std::vector<std::vector<intmax_t>>> maxflow(std::vector<std::vector<intmax_t>> G, int s, int t) {
+std::vector<std::vector<int_fast8_t>> maxflow(std::vector<std::vector<int_fast8_t>> G, int s, int t) {
 	std::vector<std::optional<size_t>> parent(G.size());
-	auto flow = std::vector<std::vector<intmax_t>>(G.size(), std::vector<intmax_t>(G[0].size()));
-	uintmax_t max_flow = 0;
+	auto flow = std::vector<std::vector<int_fast8_t>>(G.size(), std::vector<int_fast8_t>(G[0].size()));
 
-	intmax_t new_flow = 0;
+	int_fast8_t new_flow = 0;
 	while ((new_flow = bfs(s, t, G, parent)) > 0) {
-		max_flow += new_flow;
 		size_t current = t;
 		while (current != s) {
 			size_t p = *parent[current];
@@ -49,11 +47,11 @@ std::pair<intmax_t, std::vector<std::vector<intmax_t>>> maxflow(std::vector<std:
 		}
 	}
 
-	return {max_flow, flow};
+	return flow;
 }
 
 /***
- * @param pairs: Pairs of connected verticies. Indexing in each partition is separate.
+ * @param pairs: Pairs of connected vertices. Indexing in each partition is separate.
  */
 std::vector<std::pair<size_t, size_t>> bipartite_maximum_matching(const std::vector<std::pair<size_t, size_t>> &pairs) {
 	if (pairs.empty()) {
@@ -73,7 +71,7 @@ std::vector<std::pair<size_t, size_t>> bipartite_maximum_matching(const std::vec
 	size_t s = vertices_num;
 	size_t t = s + 1;
 
-	std::vector<std::vector<intmax_t>> G(vertices_num + 2, std::vector<intmax_t>(vertices_num + 2, 0));
+	std::vector<std::vector<int_fast8_t>> G(vertices_num + 2, std::vector<int_fast8_t>(vertices_num + 2, 0));
 
 	for (size_t i = 0; i < left_num; i++) {
 		G[s][i] = 1;
@@ -92,7 +90,7 @@ std::vector<std::pair<size_t, size_t>> bipartite_maximum_matching(const std::vec
 
 	for (size_t i = 0; i < left_num; i++) {
 		for (size_t j = 0; j < right_num; j++) {
-			if (flow_result.second[i][left_num + j] > 0) {
+			if (flow_result[i][left_num + j] > 0) {
 				result.emplace_back(i, j);
 			}
 		}
