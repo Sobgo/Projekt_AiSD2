@@ -5,7 +5,7 @@
 #include <queue>
 
 int_fast8_t bfs(size_t s, size_t t, std::vector<std::vector<int_fast8_t>> &G, std::vector<std::optional<size_t>> &parent) {
-	std::queue<std::pair<int, int>> q;
+	std::queue<std::pair<size_t, size_t>> q;
 	parent.assign(parent.size(), std::nullopt);
 	q.push({s, std::numeric_limits<int_fast8_t>::max()});
 	int_fast8_t new_flow = 0;
@@ -21,13 +21,10 @@ int_fast8_t bfs(size_t s, size_t t, std::vector<std::vector<int_fast8_t>> &G, st
 			}
 		}
 	}
-	if (!parent[t]) {
-		return 0;
-	}
-	return new_flow;
+	return parent[t] ? new_flow : 0;
 }
 
-std::vector<std::vector<int_fast8_t>> maxflow(std::vector<std::vector<int_fast8_t>> G, int s, int t) {
+std::vector<std::vector<int_fast8_t>> maxflow(std::vector<std::vector<int_fast8_t>> G, size_t s, size_t t) {
 	std::vector<std::optional<size_t>> parent(G.size());
 	auto flow = std::vector<std::vector<int_fast8_t>>(G.size(), std::vector<int_fast8_t>(G[0].size()));
 
