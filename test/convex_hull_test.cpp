@@ -4,14 +4,15 @@
 #include <ctime>
 #include <random>
 #include <set>
+#include <utility>
 #include <vector>
-using namespace std;
 
+using namespace std;
 using Point = pair<double, double>;
 
 bool is_subset(vector<Point> a, vector<Point> b);
-bool is_convex(vector<Point> &polygon);
-bool all_inside_polygon(vector<Point> &points, vector<Point> &polygon);
+bool is_convex(const vector<Point> &polygon);
+bool all_inside_polygon(const vector<Point> &points, const vector<Point> &polygon);
 
 SCENARIO("Convex Hull is calculated correctly") {
 	GIVEN("A set of points") {
@@ -20,15 +21,11 @@ SCENARIO("Convex Hull is calculated correctly") {
 		WHEN("Convex Hull is calculated") {
 			vector<Point> hull = convex_hull(in);
 
-			THEN("It is a subset of the input") {
-				REQUIRE(is_subset(hull, in));
-			}
+			THEN("It is a subset of the input") { REQUIRE(is_subset(hull, in)); }
 
 			THEN("It is convex") { REQUIRE(is_convex(hull)); }
 
-			THEN("All input points are inside the hull") {
-				REQUIRE(all_inside_polygon(hull, in));
-			}
+			THEN("All input points are inside the hull") { REQUIRE(all_inside_polygon(hull, in)); }
 		}
 	}
 
@@ -126,9 +123,7 @@ SCENARIO("Convex Hull is calculated correctly") {
 
 				vector<Point> hull = convex_hull(in_vec);
 
-				THEN("It is a subset of the input") {
-					REQUIRE(is_subset(hull, in_vec));
-				}
+				THEN("It is a subset of the input") { REQUIRE(is_subset(hull, in_vec)); }
 
 				THEN("It is convex") { REQUIRE(is_convex(hull)); }
 
@@ -155,22 +150,22 @@ bool is_subset(vector<Point> A, vector<Point> B) {
 }
 
 // O(n)
-bool is_convex(vector<Point> &polygon) {
+bool is_convex(const vector<Point> &polygon) {
 	bool has_positive = false;
 	bool has_negative = false;
 
 	for (int i = 0; i < polygon.size(); ++i) {
-		Point &a = polygon[i];
-		Point &b = polygon[(i + 1) % polygon.size()];
-		Point &c = polygon[(i + 2) % polygon.size()];
+		const Point &a = polygon[i];
+		const Point &b = polygon[(i + 1) % polygon.size()];
+		const Point &c = polygon[(i + 2) % polygon.size()];
 
-		double cross_product =
-			(b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x);
+		double cross_product = (b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x);
 
-		if (cross_product > 0)
+		if (cross_product > 0) {
 			has_positive = true;
-		else if (cross_product < 0)
+		} else if (cross_product < 0) {
 			has_negative = true;
+		}
 
 		if (has_positive && has_negative) return false;
 	}
@@ -179,15 +174,15 @@ bool is_convex(vector<Point> &polygon) {
 }
 
 // O(n^2) - this can be optimized to O(nlogn) using more sophisticated algorithm
-bool all_inside_polygon(vector<Point> &points, vector<Point> &polygon) {
+bool all_inside_polygon(const vector<Point> &points, const vector<Point> &polygon) {
 	// points on the boundary are considered inside
 	// the polygon should be given in counter-clockwise order
 
-	for (Point &p : points) {
+	for (const Point &p : points) {
 		bool is_inside = false;
 		for (int i = 0; i < polygon.size(); ++i) {
-			Point &a = polygon[i];
-			Point &b = polygon[(i + 1) % polygon.size()];
+			const Point &a = polygon[i];
+			const Point &b = polygon[(i + 1) % polygon.size()];
 
 			if ((b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x) >= 0) {
 				is_inside = true;
