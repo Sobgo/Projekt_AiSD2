@@ -5,10 +5,8 @@
 using namespace std;
 using Point = pair<double, double>;
 
-// NOLINTBEGIN(cppcoreguidelines-macro-usage)
-#define x first
-#define y second
-// NOLINTEND(cppcoreguidelines-macro-usage)
+#define x first  // NOLINT(cppcoreguidelines-macro-usage)
+#define y second // NOLINT(cppcoreguidelines-macro-usage)
 
 double dist(const Point &a, const Point &b) {
 	return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
