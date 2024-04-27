@@ -1,35 +1,42 @@
 #include "bipartite_maximum_matching.h"
+
+#include <cstddef>
 #include <cstdint>
 #include <limits>
 #include <optional>
 #include <queue>
+#include <utility>
+#include <vector>
 
-int_fast8_t bfs(size_t s, size_t t, std::vector<std::vector<int_fast8_t>> &G, std::vector<std::optional<size_t>> &parent) {
+int_fast8_t bfs(size_t source, std::vector<std::vector<int_fast8_t>> &network,
+                std::vector<std::optional<size_t>> &parent, size_t sink) {
 	std::queue<std::pair<size_t, size_t>> q;
 	parent.assign(parent.size(), std::nullopt);
-	q.push({s, std::numeric_limits<int_fast8_t>::max()});
+	q.push({source, std::numeric_limits<int_fast8_t>::max()});
 	int_fast8_t new_flow = 0;
 	while (!q.empty()) {
 		size_t current = q.front().first;
 		int_fast8_t current_flow = q.front().second;
 		q.pop();
-		for (size_t i = 0; i < G[current].size(); i++) {
-			if (G[current][i] > 0 && !parent[i] && i != s) {
+		for (size_t i = 0; i < network[current].size(); i++) {
+			if (network[current][i] > 0 && !parent[i] && i != source) {
 				parent[i] = current;
-				new_flow = std::min(G[current][i], current_flow);
+				new_flow = std::min(network[current][i], current_flow);
 				q.push({i, new_flow});
 			}
 		}
 	}
-	return parent[t] ? new_flow : 0;
+	return parent[sink] ? new_flow : 0;
 }
 
-std::vector<std::vector<int_fast8_t>> maxflow(std::vector<std::vector<int_fast8_t>> G, size_t s, size_t t) {
+std::vector<std::vector<int_fast8_t>> maxflow(std::vector<std::vector<int_fast8_t>> G, size_t s,
+                                              size_t t) {
 	std::vector<std::optional<size_t>> parent(G.size());
-	auto flow = std::vector<std::vector<int_fast8_t>>(G.size(), std::vector<int_fast8_t>(G[0].size()));
+	auto flow =
+	    std::vector<std::vector<int_fast8_t>>(G.size(), std::vector<int_fast8_t>(G[0].size()));
 
 	int_fast8_t new_flow = 0;
-	while ((new_flow = bfs(s, t, G, parent)) > 0) {
+	while ((new_flow = bfs(s, G, parent, t)) > 0) {
 		size_t current = t;
 		while (current != s) {
 			size_t p = *parent[current];
@@ -49,7 +56,8 @@ std::vector<std::vector<int_fast8_t>> maxflow(std::vector<std::vector<int_fast8_
 /***
  * @param pairs: Pairs of connected vertices. Indexing in each partition is separate.
  */
-std::vector<std::pair<size_t, size_t>> bipartite_maximum_matching(const std::vector<std::pair<size_t, size_t>> &pairs) {
+std::vector<std::pair<size_t, size_t>>
+bipartite_maximum_matching(const std::vector<std::pair<size_t, size_t>> &pairs) {
 	if (pairs.empty()) {
 		return {};
 	}
@@ -67,7 +75,8 @@ std::vector<std::pair<size_t, size_t>> bipartite_maximum_matching(const std::vec
 	size_t s = vertices_num;
 	size_t t = s + 1;
 
-	std::vector<std::vector<int_fast8_t>> G(vertices_num + 2, std::vector<int_fast8_t>(vertices_num + 2, 0));
+	std::vector<std::vector<int_fast8_t>> G(vertices_num + 2,
+	                                        std::vector<int_fast8_t>(vertices_num + 2, 0));
 
 	for (size_t i = 0; i < left_num; i++) {
 		G[s][i] = 1;
