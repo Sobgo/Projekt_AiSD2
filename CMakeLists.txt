@@ -14,4 +14,4 @@ add_subdirectory(test)
 add_executable(Projekt_AiSD2 main.cpp)
 target_sources(Projekt_AiSD2 PRIVATE main.cpp)
 
-target_link_libraries(Projekt_AiSD2 PRIVATE test_lib)
+#target_link_libraries(Projekt_AiSD2 PRIVATE libs_here)
