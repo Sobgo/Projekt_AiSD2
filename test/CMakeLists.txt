@@ -9,13 +9,9 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2)
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 
-file(GLOB_RECURSE TEST_SOURCES "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
-
-add_executable(tests ${TEST_SOURCES})
+add_executable(tests test.cpp)
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
-
-# Add any libraries required by tests here
-target_link_libraries(tests PRIVATE bipartite_maximum_matching)
+target_link_libraries(tests PRIVATE test_lib)
 
 include(CTest)
 include(Catch)
