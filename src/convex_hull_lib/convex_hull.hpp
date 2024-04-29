@@ -4,6 +4,11 @@
 #include <utility>
 #include <vector>
 
+double distance(const std::pair<double, double> &a, const std::pair<double, double> &b);
+
+double orientation(const std::pair<double, double> &a, const std::pair<double, double> &b,
+                   const std::pair<double, double> &c);
+
 std::vector<std::pair<double, double>> convex_hull(std::vector<std::pair<double, double>> points);
 
 #endif

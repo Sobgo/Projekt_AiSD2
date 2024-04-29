@@ -17,15 +17,15 @@ bool all_inside_polygon(const vector<Point> &points, const vector<Point> &polygo
 SCENARIO("Convex Hull is calculated correctly") {
 	GIVEN("A set of points") {
 		vector<Point> in = {{1, 1}, {2, 3}, {3, 2}, {2, 2}};
+		vector<Point> out = {{1, 1}, {2, 3}, {3, 2}};
 
 		WHEN("Convex Hull is calculated") {
 			vector<Point> hull = convex_hull(in);
 
-			THEN("It is a subset of the input") { REQUIRE(is_subset(hull, in)); }
-
-			THEN("It is convex") { REQUIRE(is_convex(hull)); }
-
-			THEN("All input points are inside the hull") { REQUIRE(all_inside_polygon(hull, in)); }
+			THEN("It matches the expected output") {
+				REQUIRE(hull.size() == out.size());
+				REQUIRE(is_subset(hull, out));
+			}
 		}
 	}
 
@@ -120,7 +120,6 @@ SCENARIO("Convex Hull is calculated correctly") {
 				}
 
 				vector<Point> in_vec(in.begin(), in.end());
-
 				vector<Point> hull = convex_hull(in_vec);
 
 				THEN("It is a subset of the input") { REQUIRE(is_subset(hull, in_vec)); }
@@ -159,11 +158,11 @@ bool is_convex(const vector<Point> &polygon) {
 		const Point &b = polygon[(i + 1) % polygon.size()];
 		const Point &c = polygon[(i + 2) % polygon.size()];
 
-		double cross_product = (b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x);
+		double o = orientation(a, b, c);
 
-		if (cross_product > 0) {
+		if (o > 0) {
 			has_positive = true;
-		} else if (cross_product < 0) {
+		} else if (o < 0) {
 			has_negative = true;
 		}
 
@@ -174,19 +173,41 @@ bool is_convex(const vector<Point> &polygon) {
 }
 
 // O(n^2) - this can be optimized to O(nlogn) using more sophisticated algorithm
+// points on the boundary are considered inside
 bool all_inside_polygon(const vector<Point> &points, const vector<Point> &polygon) {
-	// points on the boundary are considered inside
-	// the polygon should be given in counter-clockwise order
+	const auto between = [](double p, double a, double b) -> bool {
+		return p >= a && p <= b || p <= a && p >= b;
+	};
 
 	for (const Point &p : points) {
 		bool is_inside = false;
-		for (int i = 0; i < polygon.size(); ++i) {
-			const Point &a = polygon[i];
-			const Point &b = polygon[(i + 1) % polygon.size()];
 
-			if ((b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x) >= 0) {
+		for (int i = polygon.size() - 1, j = 0; j < polygon.size(); i = j++) {
+			const Point &a = polygon[i];
+			const Point &b = polygon[j];
+
+			if (p.x == a.x && p.y == a.y || p.x == b.x && p.y == b.y) {
 				is_inside = true;
 				break;
+			}
+
+			if (a.y == b.y && p.y == a.y && between(p.x, a.x, b.x)) {
+				is_inside = true;
+				break;
+			}
+
+			if (between(p.y, a.y, b.y)) {
+				if ((p.y == a.y && b.y >= a.y) || (p.y == b.y && a.y >= b.y)) {
+					is_inside = true;
+					break;
+				}
+
+				const double o = orientation(a, b, p);
+				if (o == 0) continue;
+
+				if ((a.y < b.y) == (o > 0)) {
+					is_inside = !is_inside;
+				}
 			}
 		}
 
