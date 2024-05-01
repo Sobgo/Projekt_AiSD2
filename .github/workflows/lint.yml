@@ -2,7 +2,6 @@ name: Run linters
 
 on:
   push:
-  pull_request:
 
 jobs:
   lint:
@@ -27,6 +26,7 @@ jobs:
           thread-comments: ${{ github.event_name == 'pull_request' && 'update' }}
           step-summary: true
           files-changed-only: false
+          version: '18'
       - name: Fail fast?!
         if: steps.linter.outputs.checks-failed > 0
         run: exit 1
