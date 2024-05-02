@@ -1,1 +1,2 @@
+add_subdirectory(convex_hull_lib)
 add_subdirectory(bipartite_maximum_matching_lib)
