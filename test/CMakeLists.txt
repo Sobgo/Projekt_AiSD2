@@ -17,6 +17,7 @@ target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
 # Add any libraries required by tests here
 target_link_libraries(tests PRIVATE convex_hull)
 target_link_libraries(tests PRIVATE bipartite_maximum_matching)
+target_link_libraries(tests PRIVATE pattern_matching)
 
 include(CTest)
 include(Catch)

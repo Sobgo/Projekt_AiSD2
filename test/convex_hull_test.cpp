@@ -1,4 +1,3 @@
-#include "../src/convex_hull_lib/convex_hull.hpp"
 #include <algorithm>
 #include <catch2/catch_test_macros.hpp>
 #include <ctime>
@@ -6,6 +5,8 @@
 #include <set>
 #include <utility>
 #include <vector>
+
+#include "../src/convex_hull_lib/convex_hull.hpp"
 
 using namespace std;
 using Point = pair<double, double>;
