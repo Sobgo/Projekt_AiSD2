@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <vector>
 
-#include "../src/bipartite_maximum_matching_lib/bipartite_maximum_matching.h"
+#include "../src/bipartite_maximum_matching_lib/bipartite_maximum_matching.hpp"
 
 // we want maximum matching but it's hard to check easily
 bool is_maximal_matching(const std::vector<std::pair<size_t, size_t>> &matching, const std::vector<std::pair<size_t, size_t>> &edges);
