@@ -4,6 +4,6 @@
 #include "../src/sssp_plane_lib/sssp_plane.hpp"
 
 TEST_CASE("sssp_plane empty", "[sssp_plane]") {
-	auto result = sssp_plane({}, {}, 0, {});
+	auto result = sssp_plane::sssp_plane({}, {}, 0, {});
 	REQUIRE(result.empty());
 }
