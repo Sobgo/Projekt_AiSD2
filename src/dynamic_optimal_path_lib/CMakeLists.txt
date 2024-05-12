@@ -1,0 +1,1 @@
+add_library(dynamic_optimal_path dynamic_optimal_path.cpp)
