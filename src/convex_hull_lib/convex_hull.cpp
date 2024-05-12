@@ -65,4 +65,4 @@ vector<Point> convex_hull(vector<Point> points) {
 #undef x
 #undef y
 
-} // namespace convex_hull
+}

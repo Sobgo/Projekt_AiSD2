@@ -32,7 +32,8 @@ void dijkstra(const std::vector<std::vector<std::pair<std::size_t, double>>> &ad
 					current_closest_vertex_opt = j;
 				}
 			}
-			current_closest_vertex = *current_closest_vertex_opt;
+			current_closest_vertex =
+			    current_closest_vertex_opt.value(); // NOLINT(bugprone-unchecked-optional-access)
 		}
 		if (dist[current_closest_vertex] == std::numeric_limits<double>::infinity()) {
 			break;
@@ -48,6 +49,13 @@ void dijkstra(const std::vector<std::vector<std::pair<std::size_t, double>>> &ad
 	}
 }
 
+SSSP_Path::SSSP_Path(std::size_t destination, std::vector<std::size_t> path, double distance)
+    : destination(destination), path(std::move(path)), distance(distance) {}
+
+bool SSSP_Path::operator==(const SSSP_Path &other) const {
+	return destination == other.destination && path == other.path && distance == other.distance;
+}
+
 /***
  * @brief Computes Single Source Shortest Path on a 2d plane
  * @details Uses Dijkstra's algorithm
@@ -58,10 +66,10 @@ void dijkstra(const std::vector<std::vector<std::pair<std::size_t, double>>> &ad
  * @param destinations: indices of destination points in `points`
  * @return pairs of the index of the destination point and the path to it
  */
-std::vector<std::pair<std::size_t, std::vector<std::size_t>>>
-sssp_plane(const std::vector<std::pair<double, double>> &points,
-           const std::vector<std::pair<std::size_t, std::size_t>> &edges, const std::size_t source,
-           const std::vector<std::size_t> &destinations) {
+std::vector<SSSP_Path> sssp_plane(const std::vector<std::pair<double, double>> &points,
+                                  const std::vector<std::pair<std::size_t, std::size_t>> &edges,
+                                  const std::size_t source,
+                                  const std::vector<std::size_t> &destinations) {
 	if (source >= points.size()) {
 		throw std::out_of_range("source index out of range");
 	}
@@ -81,21 +89,22 @@ sssp_plane(const std::vector<std::pair<double, double>> &points,
 
 	dijkstra(adj_list, source, dist, parent, points.size());
 
-	std::vector<std::pair<std::size_t, std::vector<std::size_t>>> result;
+	std::vector<SSSP_Path> result;
 	result.reserve(destinations.size());
 	for (const auto &destination : destinations) {
 		if (dist[destination] == std::numeric_limits<double>::infinity()) {
 			continue;
 		}
 		std::vector<std::size_t> path;
-		for (std::size_t current = destination; current != source; current = *parent[current]) {
-			path.push_back(current);
+		for (std::optional<std::size_t> current = destination; current;
+		     current = parent[*current]) {
+			path.push_back(*current);
 		}
 		std::reverse(path.begin(), path.end());
-		result.emplace_back(destination, path);
+		result.emplace_back(destination, path, dist[destination]);
 	}
 
 	return result;
 }
 
-} // namespace sssp_plane
+}

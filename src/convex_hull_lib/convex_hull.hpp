@@ -13,6 +13,6 @@ double orientation(const std::pair<double, double> &a, const std::pair<double, d
 
 std::vector<std::pair<double, double>> convex_hull(std::vector<std::pair<double, double>> points);
 
-} // namespace convex_hull
+}
 
 #endif
