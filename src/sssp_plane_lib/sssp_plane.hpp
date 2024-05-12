@@ -1,6 +1,7 @@
 #ifndef SSSP_PLANE_H
 #define SSSP_PLANE_H
 
+#include <cstddef>
 #include <utility>
 #include <vector>
 

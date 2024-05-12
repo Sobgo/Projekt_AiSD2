@@ -109,4 +109,4 @@ bipartite_maximum_matching(const std::vector<std::pair<size_t, size_t>> &pairs) 
 	return result;
 }
 
-}
+} // namespace bipartite_maximum_matching
