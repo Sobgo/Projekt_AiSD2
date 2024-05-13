@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <limits>
 #include <optional>
+#include <queue>
 #include <stdexcept>
 #include <utility>
 #include <vector>
@@ -20,30 +21,26 @@ double distance(const std::pair<double, double> &a, const std::pair<double, doub
 void dijkstra(const std::vector<std::vector<std::pair<std::size_t, double>>> &adj_list,
               const std::size_t source, std::vector<double> &dist,
               std::vector<std::optional<std::size_t>> &parent, const std::size_t num_vertices) {
-	std::vector<bool> visited(num_vertices, false);
+	std::priority_queue<std::pair<std::size_t, double>, std::vector<std::pair<std::size_t, double>>,
+	                    std::greater<std::pair<std::size_t, double>>>
+	    q;
 	dist[source] = 0;
-	for (std::size_t i = 0; i < num_vertices; ++i) {
-		std::size_t current_closest_vertex = 0;
-		{
-			std::optional<std::size_t> current_closest_vertex_opt = std::nullopt;
-			for (std::size_t j = 0; j < num_vertices; ++j) {
-				if (!visited[j] &&
-				    (!current_closest_vertex_opt || dist[j] < dist[*current_closest_vertex_opt])) {
-					current_closest_vertex_opt = j;
-				}
-			}
-			current_closest_vertex =
-			    current_closest_vertex_opt.value(); // NOLINT(bugprone-unchecked-optional-access)
-		}
-		if (dist[current_closest_vertex] == std::numeric_limits<double>::infinity()) {
-			break;
-		}
-		visited[current_closest_vertex] = true;
-		for (const auto &edge : adj_list[current_closest_vertex]) {
-			const double new_dist = dist[current_closest_vertex] + edge.second;
-			if (new_dist < dist[edge.first]) {
-				dist[edge.first] = new_dist;
-				parent[edge.first] = current_closest_vertex;
+	q.push({source, 0});
+	while (!q.empty()) {
+		const std::size_t current_vertex = q.top().first;
+		const double current_dist = q.top().second;
+		q.pop();
+
+		if (dist[current_vertex] < current_dist) continue;
+
+		for (const auto &edge : adj_list[current_vertex]) {
+			const std::size_t v = edge.first;
+			const double d = edge.second;
+			const double potential_dist = current_dist + d;
+			if (dist[v] > potential_dist) {
+				dist[v] = potential_dist;
+				parent[v] = current_vertex;
+				q.push({v, dist[v]});
 			}
 		}
 	}
