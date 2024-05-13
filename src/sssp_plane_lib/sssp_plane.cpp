@@ -18,12 +18,12 @@ double distance(const std::pair<double, double> &a, const std::pair<double, doub
 	return std::sqrt(x_dist * x_dist + y_dist * y_dist);
 }
 
-void dijkstra(const std::vector<std::vector<std::pair<std::size_t, double>>> &adj_list,
-              const std::size_t source, std::vector<double> &dist,
-              std::vector<std::optional<std::size_t>> &parent, const std::size_t num_vertices) {
-	std::priority_queue<std::pair<std::size_t, double>, std::vector<std::pair<std::size_t, double>>,
-	                    std::greater<std::pair<std::size_t, double>>>
-	    q;
+typedef std::pair<std::size_t, double> AdjEdge;
+
+void dijkstra(const std::vector<std::vector<AdjEdge>> &adj_list, const std::size_t source,
+              std::vector<double> &dist, std::vector<std::optional<std::size_t>> &parent,
+              const std::size_t num_vertices) {
+	std::priority_queue<AdjEdge, std::vector<AdjEdge>, std::greater<AdjEdge>> q;
 	dist[source] = 0;
 	q.push({source, 0});
 	while (!q.empty()) {
@@ -63,9 +63,8 @@ bool SSSP_Path::operator==(const SSSP_Path &other) const {
  * @param destinations: indices of destination points in `points`
  * @return pairs of the index of the destination point and the path to it
  */
-std::vector<SSSP_Path> sssp_plane(const std::vector<std::pair<double, double>> &points,
-                                  const std::vector<std::pair<std::size_t, std::size_t>> &edges,
-                                  const std::size_t source,
+std::vector<SSSP_Path> sssp_plane(const std::vector<Point> &points, const std::vector<Edge> &edges,
+                                  std::size_t source,
                                   const std::vector<std::size_t> &destinations) {
 	if (source >= points.size()) {
 		throw std::out_of_range("source index out of range");
