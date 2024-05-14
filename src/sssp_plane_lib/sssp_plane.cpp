@@ -18,7 +18,7 @@ double distance(const std::pair<double, double> &a, const std::pair<double, doub
 	return std::sqrt(x_dist * x_dist + y_dist * y_dist);
 }
 
-typedef std::pair<std::size_t, double> AdjEdge;
+using AdjEdge = std::pair<std::size_t, double>;
 
 void dijkstra(const std::vector<std::vector<AdjEdge>> &adj_list, const std::size_t source,
               std::vector<double> &dist, std::vector<std::optional<std::size_t>> &parent,

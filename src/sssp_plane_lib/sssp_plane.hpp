@@ -7,8 +7,8 @@
 
 namespace sssp_plane {
 
-typedef std::pair<double, double> Point;
-typedef std::pair<std::size_t, std::size_t> Edge;
+using Point = std::pair<double, double>;
+using Edge = std::pair<std::size_t, std::size_t>;
 
 struct SSSP_Path {
 	std::size_t destination;
