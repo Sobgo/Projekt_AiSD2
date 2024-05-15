@@ -11,7 +11,7 @@ Checks: '-*,
   readability-*,
   -modernize-use-trailing-return-type,
   -llvm-header-guard,
-  -readability-identifier-length
+  -readability-identifier-length,
   -bugprone-easily-swappable-parameters'
 FormatStyle: 'file'
 CheckOptions: 
