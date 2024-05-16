@@ -3,13 +3,12 @@
 
 #include <cstddef>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 namespace pattern_matching {
 
-std::unordered_map<std::string, std::vector<size_t>>
-aho_corasick(const std::vector<std::string> &patterns, const std::string &text);
+std::vector<std::vector<size_t>> aho_corasick(const std::string &text,
+                                              const std::vector<std::string> &patterns);
 
 } // namespace pattern_matching
 
