@@ -4,6 +4,26 @@
 \usepackage[utf8]{inputenc}
 \usepackage[polish]{babel}
 
+\usepackage{csquotes}
+
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{url}
+
+\usepackage[dvipsnames]{xcolor}
+\hypersetup{
+colorlinks=true,
+linkcolor=BrickRed,
+citecolor=Green,
+urlcolor=blue,
+frenchlinks=true,
+pdftitle={Atak z trzeciego wymiaru},
+pdfpagemode=FullScreen,
+}
+
+\usepackage[backend=biber, sorting=ynt]{biblatex}
+\addbibresource{bibliography.bib}
+
 \title{Atak z trzeciego wymiaru \\\large Sprawozdanie z projektu}
 \author{Mikołaj Juda \and Mateusz Sobkowiak \and Paulina Grabowska}
 \date{2024}
@@ -13,11 +33,17 @@
 \section{Przepływ pracy}
 aaaaaaaaaaaaaaaa
 \section{Rozwiązania problemów}
-\subsection{Transport odcinków}
+\subsection{Długość płotu}
+aaaaaaaaaaaaaaaa
+\subsection{Budowa płotu}
 \subsubsection{Parowanie tragarzy}
-aaaaaaaaaaaaaaaa
+Parowanie tragarzy zrealizowaliśmy jako znajdowanie największego skojarzenia w grafie dwudzielnym.
+Rozwiązanie zaimplementowaliśmy naiwnie używając algorytmu Edmondsa-Karpa ze względu na prostotę implementacji
+(wykorzystaliśmy implementację, którą napisaliśmy wcześniej). Przy złożoności \(\mathcal{O}(|V||E|)\)\cite{cs6820matchingnotes}
+i fakcie, że algorytm uruchamiany jest tylko raz na początku planowania budowy, więc czas wykonania nie jest bardzo istotny,
+uznaliśmy, że nasze rozwiązanie jest wystarczająco wydajne.
 \subsection{Wyznaczanie dróg}
-aaaaaaaaaaaaaaaa
+Wyznaczanie dróg z fabryki do miejsca budowy płotu zaimplementowaliśmy używając algorytmu Dijkstry.
 \subsection{Zapisywanie melodii}
 \subsubsection{Zamiana fragmentów}
 aaaaaaaaaaaaaaaa
@@ -25,4 +51,5 @@ aaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaa
 \subsection{Patrole strażników}
 aaaaaaaaaaaaaaaa
+\printbibliography[heading=bibintoc]
 \end{document}
