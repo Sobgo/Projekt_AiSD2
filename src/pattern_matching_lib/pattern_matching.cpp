@@ -21,7 +21,7 @@ class AhoCorasick {
 		optional<size_t> parent, parent_char, suffix_link = nullopt, exit_link = nullopt;
 
 		bool is_terminal = false;
-		vector<size_t> terminal_ids = {};
+		vector<size_t> terminal_ids;
 
 		Node(optional<size_t> parent = nullopt, optional<size_t> parent_char = nullopt)
 		    : parent(parent), parent_char(parent_char) {
