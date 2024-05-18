@@ -128,7 +128,7 @@ SCENARIO("Edge cases") {
 			}
 		}
 
-		WHEN("the pattern overlaps itslef within the text") {
+		WHEN("The pattern overlaps itslef within the text") {
 			vector<string> patterns = {"aaaa"};
 			string text = "aaaaaaaaaaaaaaaaaaaaaaa";
 			auto result = pattern_matching::aho_corasick(text, patterns);
@@ -155,7 +155,7 @@ SCENARIO("Edge cases") {
 			}
 		}
 
-		WHEN("There patterns vector is empty") {
+		WHEN("The patterns vector is empty") {
 			vector<string> patterns = {};
 			string text = "aabacbabcb";
 			auto result = pattern_matching::aho_corasick(text, patterns);
@@ -203,7 +203,9 @@ string generate_random_string(size_t length, size_t alphabet_size) {
 	return s;
 }
 
-// Naive implementation of pattern matching for testing purposes
+/*
+ * @details Naive implementation of pattern matching for testing purposes
+ */
 vector<vector<size_t>> find_patterns(const string &text, const vector<string> &patterns) {
 
 	vector<vector<size_t>> res(patterns.size());

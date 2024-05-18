@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <array>
 #include <cassert>
 #include <cstddef>
@@ -9,6 +10,10 @@
 namespace pattern_matching {
 using namespace std;
 const size_t ALPHABET_SIZE = 26;
+
+bool is_lower(const string &s) {
+	return all_of(s.begin(), s.end(), [](const char &c) { return 'a' <= c && c <= 'z'; });
+}
 
 class AhoCorasick {
 	struct Node {
@@ -36,20 +41,17 @@ class AhoCorasick {
 		assert(!converted);
 
 		size_t cur = 0;
-
 		for (const char &c : s) {
-			assert('a' <= c && c <= 'z');
-
 			const size_t idx = c - 'a';
+			auto child_node = T[cur].children.at(idx);
 
-			if (!(T[cur].children.at(idx).has_value())) {
+			if (!child_node.has_value()) {
+				child_node = T.size();
 				T[cur].children.at(idx) = T.size();
 				T.emplace_back(cur, idx);
 			}
 
-			// Guaranteed to be non-empty by the above if statement
-			// NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-			cur = T[cur].children.at(idx).value();
+			cur = child_node.value();
 		}
 
 		T[cur].is_terminal = true;
@@ -58,36 +60,33 @@ class AhoCorasick {
 
 	size_t link(size_t v) {
 		assert(converted);
-		assert(T[v].suffix_link.has_value());
-		// Should never be nullopt if algorithm is correct
-		// NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-		return T[v].suffix_link.value();
+
+		const auto &link = T[v].suffix_link;
+		assert(link.has_value());
+		return link.value();
 	}
 
 	size_t go(size_t v, size_t c) {
 		assert(converted);
-		assert(T[v].go.at(c).has_value());
-		// Should never be nullopt if algorithm is correct
-		// NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-		return T[v].go.at(c).value();
+
+		const auto &go = T[v].go.at(c);
+		assert(go.has_value());
+		return go.value();
 	}
 
 	size_t exit(size_t v) {
 		assert(converted);
-		assert(T[v].exit_link.has_value());
-		// Should never be nullopt if algorithm is correct
-		// NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-		size_t cur = T[v].exit_link.value();
 
-		while (T[cur].exit_link != 0 && !T[cur].is_terminal) {
-			assert(T[cur].exit_link.has_value());
-			// Should never be nullopt if algorithm is correct
-			// NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-			cur = T[cur].exit_link.value();
+		auto cur = T[v].exit_link;
+		assert(cur.has_value());
+
+		while (T[cur.value()].exit_link != 0 && !T[cur.value()].is_terminal) {
+			cur = T[cur.value()].exit_link;
+			assert(cur.has_value());
 		}
 
 		T[v].exit_link = cur;
-		return cur;
+		return cur.value();
 	}
 
 	void convert_to_automaton() {
@@ -103,10 +102,10 @@ class AhoCorasick {
 			if (cur == 0 || T[cur].parent == 0) {
 				T[cur].suffix_link = T[cur].exit_link = 0;
 			} else {
-				assert((T[cur].parent.has_value() && T[cur].parent_char.has_value()));
-				// Should never be nullopt if algorithm is correct
-				// NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-				T[cur].suffix_link = go(link(T[cur].parent.value()), T[cur].parent_char.value());
+				const auto &parent = T[cur].parent;
+				const auto &parent_char = T[cur].parent_char;
+				assert((parent.has_value() && parent_char.has_value()));
+				T[cur].suffix_link = go(link(parent.value()), parent_char.value());
 				T[cur].exit_link = T[cur].suffix_link;
 			}
 
@@ -137,6 +136,7 @@ vector<vector<size_t>> aho_corasick(const string &text, const vector<string> &pa
 	AhoCorasick ac;
 
 	for (size_t i = 0; i < patterns.size(); ++i) {
+		assert(is_lower(patterns[i]));
 		ac.add_string(patterns[i], i);
 	}
 
