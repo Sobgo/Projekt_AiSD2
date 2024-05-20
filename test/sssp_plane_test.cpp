@@ -1,5 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 #include <cmath>
+#include <cstddef>
 #include <set>
 #include <vector>
 
@@ -108,6 +109,5 @@ bool is_valid_path(const sssp_plane::SSSP_Path &path, const std::vector<sssp_pla
 		}
 		distance += euclidian_distance(points[path.path[i]], points[path.path[i + 1]]);
 	}
-	if (distance != path.distance) return false;
-	return true;
+	return distance == path.distance;
 }

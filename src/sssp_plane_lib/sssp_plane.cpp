@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
+#include <functional>
 #include <limits>
 #include <optional>
 #include <queue>
@@ -21,11 +22,10 @@ double distance(const std::pair<double, double> &a, const std::pair<double, doub
 using AdjEdge = std::pair<std::size_t, double>;
 
 void dijkstra(const std::vector<std::vector<AdjEdge>> &adj_list, const std::size_t source,
-              std::vector<double> &dist, std::vector<std::optional<std::size_t>> &parent,
-              const std::size_t num_vertices) {
-	std::priority_queue<AdjEdge, std::vector<AdjEdge>, std::greater<AdjEdge>> q;
+              std::vector<double> &dist, std::vector<std::optional<std::size_t>> &parent) {
+	std::priority_queue<AdjEdge, std::vector<AdjEdge>, std::greater<>> q;
 	dist[source] = 0;
-	q.push({source, 0});
+	q.emplace(source, 0);
 	while (!q.empty()) {
 		const std::size_t current_vertex = q.top().first;
 		const double current_dist = q.top().second;
@@ -40,7 +40,7 @@ void dijkstra(const std::vector<std::vector<AdjEdge>> &adj_list, const std::size
 			if (dist[v] > potential_dist) {
 				dist[v] = potential_dist;
 				parent[v] = current_vertex;
-				q.push({v, dist[v]});
+				q.emplace(v, dist[v]);
 			}
 		}
 	}
@@ -83,7 +83,7 @@ std::vector<SSSP_Path> sssp_plane(const std::vector<Point> &points, const std::v
 	std::vector<double> dist(points.size(), std::numeric_limits<double>::infinity());
 	std::vector<std::optional<std::size_t>> parent(points.size(), std::nullopt);
 
-	dijkstra(adj_list, source, dist, parent, points.size());
+	dijkstra(adj_list, source, dist, parent);
 
 	std::vector<SSSP_Path> result;
 	result.reserve(destinations.size());
@@ -92,10 +92,14 @@ std::vector<SSSP_Path> sssp_plane(const std::vector<Point> &points, const std::v
 			continue;
 		}
 		std::vector<std::size_t> path;
-		for (std::optional<std::size_t> current = destination; current;
-		     current = parent[*current]) {
-			path.push_back(*current);
+
+		// this is checked by loop condition
+		// NOLINTBEGIN(bugprone-unchecked-optional-access)
+		for (std::optional<std::size_t> current = destination; current.has_value();
+		     current = parent[current.value()]) {
+			path.push_back(current.value());
 		}
+		// NOLINTEND(bugprone-unchecked-optional-access)
 		std::reverse(path.begin(), path.end());
 		result.emplace_back(destination, path, dist[destination]);
 	}
