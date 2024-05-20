@@ -18,6 +18,7 @@ target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
 target_link_libraries(tests PRIVATE convex_hull)
 target_link_libraries(tests PRIVATE bipartite_maximum_matching)
 target_link_libraries(tests PRIVATE pattern_matching)
+target_link_libraries(tests PRIVATE sssp_plane)
 
 include(CTest)
 include(Catch)
