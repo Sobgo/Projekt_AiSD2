@@ -14,11 +14,12 @@ string generate_random_string(size_t length, size_t alphabet_size);
 
 SCENARIO("Pattern exists in text") {
 	GIVEN("A text and a single pattern") {
+		string alphabet = "abcd";
 		vector<string> patterns = {"ab"};
 		string text = "aabacbabcb";
 
 		WHEN("The text contains the pattern multiple times") {
-			auto result = pattern_matching::aho_corasick(text, patterns);
+			auto result = pattern_matching::aho_corasick(alphabet, text, patterns);
 
 			THEN("Pattern is found correctly") {
 				REQUIRE((result.size() == 1 && result[0].size() == 2));
@@ -29,10 +30,11 @@ SCENARIO("Pattern exists in text") {
 	}
 
 	GIVEN("A text and multiple patterns") {
+		string alphabet = "abc";
 		vector<string> patterns = {"ab", "ba", "ca"};
 		string text = "aabacbabca";
 
-		auto result = pattern_matching::aho_corasick(text, patterns);
+		auto result = pattern_matching::aho_corasick(alphabet, text, patterns);
 		auto expected = find_patterns(text, patterns);
 
 		THEN("All patterns are found correctly") {
@@ -48,11 +50,12 @@ SCENARIO("Pattern exists in text") {
 
 SCENARIO("Pattern does not exist in text") {
 	GIVEN("A text and a single pattern") {
+		string alphabet = "abc";
 		vector<string> patterns = {"bb"};
 		string text = "aabacbabcb";
 
 		WHEN("The text does not contain the pattern") {
-			auto result = pattern_matching::aho_corasick(text, patterns);
+			auto result = pattern_matching::aho_corasick(alphabet, text, patterns);
 
 			THEN("Result for pattern is empty") {
 				REQUIRE(result.size() == 1);
@@ -62,10 +65,11 @@ SCENARIO("Pattern does not exist in text") {
 	}
 
 	GIVEN("A text and multiple patterns some of which do not exist in the text") {
+		string alphabet = "abcx";
 		vector<string> patterns = {"bb", "ab", "bac", "x"};
 		string text = "aabacbabcb";
 
-		auto result = pattern_matching::aho_corasick(text, patterns);
+		auto result = pattern_matching::aho_corasick(alphabet, text, patterns);
 		auto expected = find_patterns(text, patterns);
 
 		THEN("All existing patterns are found correctly and results for non-existing patterns are "
@@ -83,9 +87,10 @@ SCENARIO("Pattern does not exist in text") {
 SCENARIO("Edge cases") {
 	GIVEN("A text and a single pattern") {
 		WHEN("The pattern is a single letter") {
+			string alphabet = "abc";
 			vector<string> patterns = {"a"};
 			string text = "aabacbabcb";
-			auto result = pattern_matching::aho_corasick(text, patterns);
+			auto result = pattern_matching::aho_corasick(alphabet, text, patterns);
 			auto expected = find_patterns(text, patterns);
 
 			THEN("Pattern is found correctly") {
@@ -96,9 +101,10 @@ SCENARIO("Edge cases") {
 		}
 
 		WHEN("The text is empty") {
+			string alphabet = "ab";
 			vector<string> patterns = {"ab"};
 			string text = "";
-			auto result = pattern_matching::aho_corasick(text, patterns);
+			auto result = pattern_matching::aho_corasick(alphabet, text, patterns);
 
 			THEN("Result for pattern is empty") {
 				REQUIRE(result.size() == 1);
@@ -107,9 +113,10 @@ SCENARIO("Edge cases") {
 		}
 
 		WHEN("The pattern is empty") {
+			string alphabet = "abc";
 			vector<string> patterns = {""};
 			string text = "aabacbabcb";
-			auto result = pattern_matching::aho_corasick(text, patterns);
+			auto result = pattern_matching::aho_corasick(alphabet, text, patterns);
 
 			THEN("Result for pattern is empty") {
 				REQUIRE(result.size() == 1);
@@ -118,9 +125,10 @@ SCENARIO("Edge cases") {
 		}
 
 		WHEN("The text is a substring of the pattern") {
+			string alphabet = "abc";
 			vector<string> patterns = {"aabacbabcb"};
 			string text = "aabac";
-			auto result = pattern_matching::aho_corasick(text, patterns);
+			auto result = pattern_matching::aho_corasick(alphabet, text, patterns);
 
 			THEN("Result for pattern is empty") {
 				REQUIRE(result.size() == 1);
@@ -129,9 +137,10 @@ SCENARIO("Edge cases") {
 		}
 
 		WHEN("The pattern overlaps itslef within the text") {
+			string alphabet = "a";
 			vector<string> patterns = {"aaaa"};
 			string text = "aaaaaaaaaaaaaaaaaaaaaaa";
-			auto result = pattern_matching::aho_corasick(text, patterns);
+			auto result = pattern_matching::aho_corasick(alphabet, text, patterns);
 			auto expected = find_patterns(text, patterns);
 
 			THEN("All occurences are found correctly") {
@@ -145,9 +154,10 @@ SCENARIO("Edge cases") {
 		}
 
 		WHEN("Both the pattern and the text are empty") {
+			string alphabet = "";
 			vector<string> patterns = {""};
 			string text = "";
-			auto result = pattern_matching::aho_corasick(text, patterns);
+			auto result = pattern_matching::aho_corasick(alphabet, text, patterns);
 
 			THEN("Result for pattern is empty") {
 				REQUIRE(result.size() == 1);
@@ -156,9 +166,10 @@ SCENARIO("Edge cases") {
 		}
 
 		WHEN("The patterns vector is empty") {
+			string alphabet = "abc";
 			vector<string> patterns = {};
 			string text = "aabacbabcb";
-			auto result = pattern_matching::aho_corasick(text, patterns);
+			auto result = pattern_matching::aho_corasick(alphabet, text, patterns);
 
 			THEN("Result is empty") { REQUIRE(result.size() == 0); }
 		}
@@ -166,17 +177,19 @@ SCENARIO("Edge cases") {
 }
 
 SCENARIO("Randomized tests") {
-	for (size_t i = 0; i < 1000; ++i) {
-		size_t textlen = 1000, keylen = i % 10 + 1, alphabet = i % 25 + 1;
+	string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-		string text = generate_random_string(textlen, alphabet);
+	for (size_t i = 0; i < 1000; ++i) {
+		size_t textlen = 1000, keylen = i % 10 + 1, alphabet_size = i % 25 + 1;
+
+		string text = generate_random_string(textlen, alphabet_size);
 
 		vector<string> patterns;
 		for (size_t j = 0; j < 10; ++j) {
-			patterns.push_back(generate_random_string(keylen, alphabet));
+			patterns.push_back(generate_random_string(keylen, alphabet_size));
 		}
 
-		auto result = pattern_matching::aho_corasick(text, patterns);
+		auto result = pattern_matching::aho_corasick(alphabet, text, patterns);
 		auto expected = find_patterns(text, patterns);
 
 		REQUIRE(result.size() == patterns.size());

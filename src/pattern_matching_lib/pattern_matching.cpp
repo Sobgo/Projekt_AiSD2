@@ -1,32 +1,29 @@
-#include <algorithm>
-#include <array>
 #include <cassert>
 #include <cstddef>
 #include <deque>
 #include <optional>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace pattern_matching {
 using namespace std;
-const size_t ALPHABET_SIZE = 26;
-
-bool is_lower(const string &s) {
-	return all_of(s.begin(), s.end(), [](const char &c) { return 'a' <= c && c <= 'z'; });
-}
 
 class AhoCorasick {
+	size_t ALPHABET_SIZE;
+
 	struct Node {
-		array<optional<size_t>, ALPHABET_SIZE> children, go;
+		vector<optional<size_t>> children, go;
 		optional<size_t> parent, parent_char, suffix_link = nullopt, exit_link = nullopt;
 
 		bool is_terminal = false;
 		vector<size_t> terminal_ids;
 
-		Node(optional<size_t> parent = nullopt, optional<size_t> parent_char = nullopt)
+		Node(size_t ALPHABET_SIZE, optional<size_t> parent = nullopt,
+		     optional<size_t> parent_char = nullopt)
 		    : parent(parent), parent_char(parent_char) {
-			children.fill(nullopt);
-			go.fill(nullopt);
+			children.assign(ALPHABET_SIZE, nullopt);
+			go.assign(ALPHABET_SIZE, nullopt);
 		}
 	};
 
@@ -34,21 +31,20 @@ class AhoCorasick {
 	bool converted = false;
 
   public:
-	AhoCorasick() : T(1) {}
+	AhoCorasick(size_t alphabet_size) : T(1, Node(alphabet_size)), ALPHABET_SIZE(alphabet_size) {}
 	Node get_node(size_t v) { return T[v]; }
 
-	void add_string(const string &s, size_t idx) {
+	void add_string(const vector<size_t> &s, size_t idx) {
 		assert(!converted);
 
 		size_t cur = 0;
-		for (const char &c : s) {
-			const size_t idx = c - 'a';
+		for (const size_t &idx : s) {
 			auto child_node = T[cur].children.at(idx);
 
 			if (!child_node.has_value()) {
 				child_node = T.size();
 				T[cur].children.at(idx) = T.size();
-				T.emplace_back(cur, idx);
+				T.emplace_back(ALPHABET_SIZE, cur, idx);
 			}
 
 			cur = child_node.value();
@@ -127,17 +123,30 @@ class AhoCorasick {
  * Aho-Corasick algorithm for multiple pattern matching.
  * Constructs an automaton in O(sum of lengths of patterns * ALPHABET_SIZE)
  * Then the search is done in O(text length + answer length).
- * @param text string of lowercase letters to search in
- * @param patterns vector of lowercase strings to search for in the text
+ * @param alphabet string of characters that can appear in the text
+ * @param text string of alphabet characters to search in
+ * @param patterns vector of alphabet characters strings to search for in the text
  * @returns a vector of vectors where the i-th vector contains the starting indices of all
  * occurrences of the i-th pattern in the text.
  */
-vector<vector<size_t>> aho_corasick(const string &text, const vector<string> &patterns) {
-	AhoCorasick ac;
+vector<vector<size_t>> aho_corasick(const string &alphabet, const string &text,
+                                    const vector<string> &patterns) {
+	AhoCorasick ac(alphabet.size());
+
+	unordered_map<char, size_t> M;
+	for (size_t i = 0; i < alphabet.size(); ++i) {
+		M[alphabet[i]] = i;
+	}
 
 	for (size_t i = 0; i < patterns.size(); ++i) {
-		assert(is_lower(patterns[i]));
-		ac.add_string(patterns[i], i);
+		vector<size_t> pattern;
+		for (const char &c : patterns[i]) {
+			const auto &it = M.find(c);
+			assert(it != M.end());
+			pattern.push_back(it->second);
+		}
+
+		ac.add_string(pattern, i);
 	}
 
 	ac.convert_to_automaton();
@@ -147,9 +156,10 @@ vector<vector<size_t>> aho_corasick(const string &text, const vector<string> &pa
 	size_t cur = 0;
 	for (size_t i = 0; i < text.size(); ++i) {
 		const char &c = text[i];
-		assert('a' <= c && c <= 'z');
+		const auto &it = M.find(c);
+		assert(it != M.end());
 
-		const size_t idx = c - 'a';
+		const size_t idx = it->second;
 		cur = ac.go(cur, idx);
 
 		for (size_t v = cur; v != 0; v = ac.exit(v)) {
@@ -166,4 +176,4 @@ vector<vector<size_t>> aho_corasick(const string &text, const vector<string> &pa
 	return res;
 }
 
-} // namespace pattern_matching
+}
