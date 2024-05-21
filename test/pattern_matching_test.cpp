@@ -12,7 +12,7 @@ using namespace std;
 vector<vector<size_t>> find_patterns(const string &text, const vector<string> &patterns);
 string generate_random_string(size_t length, size_t alphabet_size);
 
-SCENARIO("Pattern exists in text") {
+SCENARIO("Pattern Matching: Pattern exists in text", "[Pattern Matching]") {
 	GIVEN("A text and a single pattern") {
 		string alphabet = "abcd";
 		vector<string> patterns = {"ab"};
@@ -48,7 +48,7 @@ SCENARIO("Pattern exists in text") {
 	}
 }
 
-SCENARIO("Pattern does not exist in text") {
+SCENARIO("Pattern Matching: Pattern does not exist in text", "[Pattern Matching]") {
 	GIVEN("A text and a single pattern") {
 		string alphabet = "abc";
 		vector<string> patterns = {"bb"};
@@ -84,7 +84,7 @@ SCENARIO("Pattern does not exist in text") {
 	}
 }
 
-SCENARIO("Edge cases") {
+SCENARIO("Pattern Matching: Edge cases", "[Pattern Matching]") {
 	GIVEN("A text and a single pattern") {
 		WHEN("The pattern is a single letter") {
 			string alphabet = "abc";
@@ -173,10 +173,47 @@ SCENARIO("Edge cases") {
 
 			THEN("Result is empty") { REQUIRE(result.size() == 0); }
 		}
+
+		WHEN("The text contains character not in the alphabet") {
+			string alphabet = "abc";
+			vector<string> patterns = {"ab"};
+			string text = "aabacbabcbx";
+
+			THEN("An exception is thrown") {
+				REQUIRE_THROWS_AS(pattern_matching::aho_corasick(alphabet, text, patterns),
+				                  invalid_argument);
+			}
+		}
+
+		WHEN("The pattern contains character not in the alphabet") {
+			string alphabet = "abc";
+			vector<string> patterns = {"abx"};
+			string text = "aabacbabcb";
+
+			THEN("An exception is thrown") {
+				REQUIRE_THROWS_AS(pattern_matching::aho_corasick(alphabet, text, patterns),
+				                  invalid_argument);
+			}
+		}
+
+		WHEN("The alphabet contains duplicate characters") {
+			string alphabet = "abca";
+			vector<string> patterns = {"ab"};
+			string text = "aabacbabcb";
+
+			THEN("Duplicate characters are ignored, and pattern is found correctly") {
+				auto result = pattern_matching::aho_corasick(alphabet, text, patterns);
+				auto expected = find_patterns(text, patterns);
+
+				REQUIRE(result.size() == patterns.size());
+				REQUIRE(result.size() == expected.size());
+				REQUIRE(result[0] == expected[0]);
+			}
+		}
 	}
 }
 
-SCENARIO("Randomized tests") {
+SCENARIO("Pattern Matching: Randomized tests", "[Pattern Matching]") {
 	string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
 	for (size_t i = 0; i < 1000; ++i) {

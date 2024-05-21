@@ -1,9 +1,11 @@
+#include <array>
 #include <cassert>
 #include <cstddef>
 #include <deque>
+#include <limits>
 #include <optional>
+#include <stdexcept>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 namespace pattern_matching {
@@ -131,19 +133,31 @@ class AhoCorasick {
  */
 vector<vector<size_t>> aho_corasick(const string &alphabet, const string &text,
                                     const vector<string> &patterns) {
-	AhoCorasick ac(alphabet.size());
 
-	unordered_map<char, size_t> M;
-	for (size_t i = 0; i < alphabet.size(); ++i) {
-		M[alphabet[i]] = i;
+	array<optional<size_t>, numeric_limits<unsigned char>::max() + 1> M;
+
+	size_t iter = 0;
+	for (const char &c : alphabet) {
+		if (M.at(c).has_value()) continue;
+		M.at(c) = iter;
+		++iter;
 	}
+
+	AhoCorasick ac(iter);
 
 	for (size_t i = 0; i < patterns.size(); ++i) {
 		vector<size_t> pattern;
 		for (const char &c : patterns[i]) {
-			const auto &it = M.find(c);
-			assert(it != M.end());
-			pattern.push_back(it->second);
+			const auto &c_val = M.at(c);
+
+			if (!c_val.has_value()) {
+				string msg = "Pattern character \"";
+				msg += c;
+				msg += "\" not in alphabet.";
+				throw invalid_argument(msg);
+			}
+
+			pattern.push_back(c_val.value());
 		}
 
 		ac.add_string(pattern, i);
@@ -156,10 +170,16 @@ vector<vector<size_t>> aho_corasick(const string &alphabet, const string &text,
 	size_t cur = 0;
 	for (size_t i = 0; i < text.size(); ++i) {
 		const char &c = text[i];
-		const auto &it = M.find(c);
-		assert(it != M.end());
 
-		const size_t idx = it->second;
+		const auto &c_val = M.at(c);
+		if (!c_val.has_value()) {
+			string msg = "Text character \"";
+			msg += c;
+			msg += "\" not in alphabet.";
+			throw invalid_argument(msg);
+		}
+
+		const size_t idx = c_val.value();
 		cur = ac.go(cur, idx);
 
 		for (size_t v = cur; v != 0; v = ac.exit(v)) {
