@@ -12,7 +12,7 @@ using namespace std;
 vector<vector<size_t>> find_patterns(const string &text, const vector<string> &patterns);
 string generate_random_string(size_t length, size_t alphabet_size);
 
-SCENARIO("Pattern Matching: Pattern exists in text", "[Pattern Matching]") {
+SCENARIO("Pattern Matching: Pattern exists in text", "[pattern_matching]") {
 	GIVEN("A text and a single pattern") {
 		string alphabet = "abcd";
 		vector<string> patterns = {"ab"};
@@ -48,7 +48,7 @@ SCENARIO("Pattern Matching: Pattern exists in text", "[Pattern Matching]") {
 	}
 }
 
-SCENARIO("Pattern Matching: Pattern does not exist in text", "[Pattern Matching]") {
+SCENARIO("Pattern Matching: Pattern does not exist in text", "[pattern_matching]") {
 	GIVEN("A text and a single pattern") {
 		string alphabet = "abc";
 		vector<string> patterns = {"bb"};
@@ -84,7 +84,7 @@ SCENARIO("Pattern Matching: Pattern does not exist in text", "[Pattern Matching]
 	}
 }
 
-SCENARIO("Pattern Matching: Edge cases", "[Pattern Matching]") {
+SCENARIO("Pattern Matching: Edge cases", "[pattern_matching]") {
 	GIVEN("A text and a single pattern") {
 		WHEN("The pattern is a single letter") {
 			string alphabet = "abc";
@@ -213,7 +213,7 @@ SCENARIO("Pattern Matching: Edge cases", "[Pattern Matching]") {
 	}
 }
 
-SCENARIO("Pattern Matching: Randomized tests", "[Pattern Matching]") {
+SCENARIO("Pattern Matching: Randomized tests", "[pattern_matching]") {
 	string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
 	for (size_t i = 0; i < 1000; ++i) {
