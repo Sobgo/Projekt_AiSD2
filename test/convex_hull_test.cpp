@@ -203,6 +203,7 @@ bool all_inside_polygon(const vector<Point> &points, const vector<Point> &polygo
 				}
 
 				const double o = convex_hull::orientation(a, b, p);
+
 				if (o == 0) continue;
 
 				if ((a.y < b.y) == (o > 0)) {
