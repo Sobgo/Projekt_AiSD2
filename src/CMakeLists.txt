@@ -1,3 +1,4 @@
 add_subdirectory(convex_hull_lib)
 add_subdirectory(bipartite_maximum_matching_lib)
+add_subdirectory(pattern_matching_lib)
 add_subdirectory(sssp_plane_lib)
