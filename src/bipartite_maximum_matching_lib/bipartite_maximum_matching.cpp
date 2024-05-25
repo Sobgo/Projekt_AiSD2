@@ -1,4 +1,4 @@
-#include "bipartite_maximum_matching.h"
+#include "bipartite_maximum_matching.hpp"
 
 #include <algorithm>
 #include <cstddef>
@@ -9,9 +9,11 @@
 #include <utility>
 #include <vector>
 
+namespace bipartite_maximum_matching {
+
 int_fast8_t bfs(size_t start, std::vector<std::vector<int_fast8_t>> &graph,
                 std::vector<std::optional<size_t>> &parent, size_t end) {
-	std::queue<std::pair<size_t, int_fast8_t>> q; // NOLINT(readability-identifier-length)
+	std::queue<std::pair<size_t, int_fast8_t>> q;
 	parent.assign(parent.size(), std::nullopt);
 	q.emplace(start, std::numeric_limits<int_fast8_t>::max());
 	int_fast8_t new_flow = 0;
@@ -105,4 +107,6 @@ bipartite_maximum_matching(const std::vector<std::pair<size_t, size_t>> &pairs) 
 	}
 
 	return result;
+}
+
 }

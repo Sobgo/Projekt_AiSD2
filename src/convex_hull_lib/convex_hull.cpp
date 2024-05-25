@@ -3,6 +3,8 @@
 #include <utility>
 #include <vector>
 
+namespace convex_hull {
+
 using namespace std;
 using Point = pair<double, double>;
 
@@ -63,3 +65,5 @@ vector<Point> convex_hull(vector<Point> points) {
 
 #undef x
 #undef y
+
+}
