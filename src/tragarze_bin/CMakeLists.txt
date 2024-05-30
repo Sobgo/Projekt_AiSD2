@@ -1,0 +1,2 @@
+add_executable(tragarze tragarze.cpp)
+target_link_libraries(tragarze PRIVATE bipartite_maximum_matching)
