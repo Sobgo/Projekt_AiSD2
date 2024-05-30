@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <iostream>
 #include <utility>
 #include <vector>
@@ -8,9 +9,9 @@ using namespace std;
 
 int main() {
 	vector<pair<size_t, size_t>> input;
-	size_t a, b;
+	size_t a = 0, b = 0;
 	while (cin >> a >> b) {
-		input.push_back({a - 1, b - 1});
+		input.emplace_back(a - 1, b - 1);
 	}
 	auto result = bipartite_maximum_matching::bipartite_maximum_matching(input);
 	for (auto &p : result) {

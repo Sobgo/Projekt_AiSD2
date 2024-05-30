@@ -1,0 +1,2 @@
+add_executable(fence_logistics main.cpp)
+target_link_libraries(fence_logistics PRIVATE convex_hull sssp_plane)
