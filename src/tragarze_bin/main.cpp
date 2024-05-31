@@ -9,7 +9,8 @@ using namespace std;
 
 int main() {
 	vector<pair<size_t, size_t>> input;
-	size_t a = 0, b = 0;
+	size_t a = 0;
+	size_t b = 0;
 	while (cin >> a >> b) {
 		input.emplace_back(a - 1, b - 1);
 	}
