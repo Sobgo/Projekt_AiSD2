@@ -20,7 +20,7 @@ struct Node {
 	Node(char character, int frequency);
 };
 
-// Comparator to order the priority queue
+// Comparator for the priority queue
 struct Compare {
 	bool operator()(Node* left, Node* right);
 };

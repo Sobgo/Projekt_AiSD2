@@ -148,3 +148,4 @@ void decompressFile(const string &inputFilename, const string &outputFilename) {
 	outFile << decompressedText;
 	outFile.close();
 }
+
