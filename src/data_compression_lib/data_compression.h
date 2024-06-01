@@ -1,27 +1,46 @@
-#ifndef DATA_COMPRESSION_HPP
-#define DATA_COMPRESSION_HPP
+#ifndef DATA_COMPRESSION_H
+#define DATA_COMPRESSION_H
 
+#include <iostream>
+#include <fstream>
+#include <vector>
 #include <unordered_map>
+#include <queue>
+#include <bitset>
 #include <string>
 
-class HuffmanNode {
-  public:
-	char char_;
+using namespace std;
+
+// Node structure for the Huffman tree
+struct Node {
+	char ch;
 	int freq;
-	HuffmanNode* left;
-	HuffmanNode* right;
+	Node *left, *right;
 
-	HuffmanNode(int freq, char char_ = '\0', HuffmanNode* left = nullptr, HuffmanNode* right = nullptr);
-	bool isLeaf() const;
-
-	bool operator<(const HuffmanNode& other) const;
+	Node(char character, int frequency);
 };
 
-HuffmanNode* buildHTree(const std::unordered_map<char, int>& freqData);
-std::unordered_map<char, std::string> hTreeToHCode(HuffmanNode* hTree);
-std::unordered_map<char, int> countFrequency(const std::string& s);
-std::string encode(const std::string& s, const std::unordered_map<char, int>& freqData);
-std::string decode(const std::string& s, const std::unordered_map<char, int>& freqData);
-void saveToFile(const std::string& fileName, const std::string& data);
+// Comparator to order the priority queue
+struct Compare {
+	bool operator()(Node* left, Node* right);
+};
+
+// Function to generate Huffman codes
+void generateCodes(Node* root, string str, unordered_map<char, string> &huffmanCode);
+
+// Function to build the Huffman tree
+Node* buildHuffmanTree(unordered_map<char, int> &freq);
+
+// Function to save the encoded file
+void saveEncodedFile(const string &filename, const string &encodedStr, unordered_map<char, string> &huffmanCode);
+
+// Function to load the encoded file
+void loadEncodedFile(const string &filename, string &encodedStr, unordered_map<char, string> &huffmanCode);
+
+// Function to compress a text file
+void compressFile(const string &inputFilename, const string &outputFilename);
+
+// Function to decompress a file
+void decompressFile(const string &inputFilename, const string &outputFilename);
 
 #endif
