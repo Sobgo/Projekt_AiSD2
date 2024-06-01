@@ -32,24 +32,30 @@ pdfpagemode=FullScreen,
 \maketitle
 \section{Przepływ pracy}
 aaaaaaaaaaaaaaaa
+
 \section{Rozwiązania problemów}
-\subsection{Długość płotu}
-aaaaaaaaaaaaaaaa
+
 \subsection{Budowa płotu}
+
+\subsubsection{Długość płotu}
+Do wyznaczania otoczki wypukłaj wykorzystaliśmy algorytm Grahama.
 \subsubsection{Parowanie tragarzy}
 Parowanie tragarzy zrealizowaliśmy jako znajdowanie największego skojarzenia w grafie dwudzielnym.
-Rozwiązanie zaimplementowaliśmy naiwnie używając algorytmu Edmondsa-Karpa ze względu na prostotę implementacji
-(wykorzystaliśmy implementację, którą napisaliśmy wcześniej). Przy złożoności \(\mathcal{O}(|V||E|)\)\cite{cs6820matchingnotes}
+Rozwiązanie zaimplementowaliśmy naiwnie używając algorytmu Edmondsa-Karpa ze względu na prostotę implementacji.
+Przy złożoności \(\mathcal{O}(|V||E|)\)\cite{cs6820matchingnotes}
 i fakcie, że algorytm uruchamiany jest tylko raz na początku planowania budowy, więc czas wykonania nie jest bardzo istotny,
 uznaliśmy, że nasze rozwiązanie jest wystarczająco wydajne.
-\subsection{Wyznaczanie dróg}
-Wyznaczanie dróg z fabryki do miejsca budowy płotu zaimplementowaliśmy używając algorytmu Dijkstry.
+\subsubsection{Wyznaczanie dróg}
+Wyznaczanie najkrótszych dróg z fabryki do miejsca budowy płotu zaimplementowaliśmy używając algorytmu Dijkstry.
+
 \subsection{Zapisywanie melodii}
 \subsubsection{Zamiana fragmentów}
-aaaaaaaaaaaaaaaa
+Do wyszukiwania fragmentów wykorzystaliśmy algorytm Aho-Corasicka.
 \subsubsection{Kompresja}
 aaaaaaaaaaaaaaaa
+
 \subsection{Patrole strażników}
 aaaaaaaaaaaaaaaa
+
 \printbibliography[heading=bibintoc]
 \end{document}
