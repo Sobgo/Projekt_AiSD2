@@ -1,3 +1,4 @@
+#include <cmath>
 #include <cstddef>
 #include <iostream>
 #include <sstream>
@@ -9,6 +10,12 @@
 #include "../sssp_plane_lib/sssp_plane.hpp"
 
 using namespace std;
+
+double euclidean_distance(const pair<double, double> &a, const pair<double, double> &b) {
+	double dx = a.first - b.first;
+	double dy = a.second - b.second;
+	return sqrt(dx * dx + dy * dy);
+}
 
 int main() {
 	vector<pair<double, double>> points;
@@ -24,9 +31,9 @@ int main() {
 	double fence_length = 0;
 
 	for (int i = 0; i < convex_hull.size() - 1; i++) {
-		fence_length += convex_hull::distance(points[convex_hull[i]], points[convex_hull[i + 1]]);
+		fence_length += euclidean_distance(points[convex_hull[i]], points[convex_hull[i + 1]]);
 	}
-	fence_length += convex_hull::distance(points[convex_hull.back()], points[convex_hull.front()]);
+	fence_length += euclidean_distance(points[convex_hull.back()], points[convex_hull.front()]);
 
 	cout << fence_length << '\n';
 
