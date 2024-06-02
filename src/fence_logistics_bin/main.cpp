@@ -28,7 +28,7 @@ int main() {
 	}
 	fence_length += convex_hull::distance(points[convex_hull.back()], points[convex_hull.front()]);
 
-	cout << fence_length << "\n\n";
+	cout << fence_length << '\n';
 
 	size_t factory_idx = 0;
 	cin >> factory_idx;
