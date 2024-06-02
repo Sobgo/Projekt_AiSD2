@@ -31,3 +31,9 @@ catch2 (instalowany automatycznie przez cmake)
     cmake --build build # przed testowaniem jeśli zostały wprowadzone zmiany
     ctest --test-dir build
 ```
+
+## sprawozdanie
+```bash
+    cd report
+    latexmk -pdf report.tex
+```
