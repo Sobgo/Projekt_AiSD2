@@ -30,8 +30,25 @@ pdfpagemode=FullScreen,
 
 \begin{document}
 \maketitle
+
+\section{Architektura}
+Problemy z wymagań projektu podzieliliśmy na podproblemy, w większości
+rozwiązywalne istniejącymi algorytmami.
+Rozwiązanie każdego podproblemu jest zaimplementowane jako biblioteka,
+która jest wykorzystywana przez program zapewniający interfejs użytkownika
+i minimalną logikę łączącą podproblemy. Pozwala to na proste testownaie
+i umożliwa łatwe wprowadzenie wielu interfejsów, na przykład
+tekstowy interfejs do użycia przez zewnętrzne programy i interfejs graficzny dla człowieka.
+
 \section{Przepływ pracy}
-aaaaaaaaaaaaaaaa
+Organizacja pracy była organizowana używając narzędzi
+dostępnych w serwisie GitHub.
+
+\noindent Przydzielanie i śledzenie zadań realizowaliśmy na tablicy Kanban w GitHub Projects.
+
+\noindent Kod rozwiązujący podproblemy był rozwijany na osobnych gałęziach,
+i łączony z główną gałęzią używając pull requestów po recenzji przez wszystkich członków zespołu.
+Używaliśmy też GitHub Actions do automatycznego uruchamiania lintera i testów.
 
 \section{Rozwiązania problemów}
 
@@ -39,23 +56,40 @@ aaaaaaaaaaaaaaaa
 
 \subsubsection{Długość płotu}
 Do wyznaczania otoczki wypukłaj wykorzystaliśmy algorytm Grahama.
+
+\noindent Testy jednostkowe zawierają sprawdzenie poprawności wyniku dla przypadków krańcowych
+i dla danych losowych w oparciu o sprawdzenie wypukłości i zawierania wszystkich punktów
+używając pomocniczych funkcji.
 \subsubsection{Parowanie tragarzy}
 Parowanie tragarzy zrealizowaliśmy jako znajdowanie największego skojarzenia w grafie dwudzielnym.
 Rozwiązanie zaimplementowaliśmy naiwnie używając algorytmu Edmondsa-Karpa ze względu na prostotę implementacji.
 Przy złożoności \(\mathcal{O}(|V||E|)\)\cite{cs6820matchingnotes}
-i fakcie, że algorytm uruchamiany jest tylko raz na początku planowania budowy, więc czas wykonania nie jest bardzo istotny,
+i fakcie, że algorytm uruchamiany jest tylko raz na początku planowania budowy,
 uznaliśmy, że nasze rozwiązanie jest wystarczająco wydajne.
+
+\noindent Testy jednostkowe sprawdzają czy wynik jest maksymalny,
+gdyż nie ma prostej metody na zweryfikowanie czy jest największy
+bez oblicznaia rozwiązania problemu.
 \subsubsection{Wyznaczanie dróg}
 Wyznaczanie najkrótszych dróg z fabryki do miejsca budowy płotu zaimplementowaliśmy używając algorytmu Dijkstry.
 
+\noindent Testy jednostkowe sprawdzają poprawność wyniku
+na podstawie porównania długości ścieżek z wcześniej wyznaczonymi poprawnymi wartościami
+i przejściu wyznaczonymi ścieżkami sprawdzając prawidłowość.
+
 \subsection{Zapisywanie melodii}
 \subsubsection{Zamiana fragmentów}
-Do wyszukiwania fragmentów wykorzystaliśmy algorytm Aho-Corasicka.
+Wyszukiwanie słów do zamiany w tekście zaimplementowaliśmy algorytmem Aho-Corasicka
+ze względu na możliwość wyszukiwania wielu wzorców jednocześnie.
+
+\noindent Testy jednostkowe sprawdzają poprawność wyniku
+dla przypadków prostych, granicznych i losowych na podstawie porównania
+z wynikiem algorytmu naiwnego.
 \subsubsection{Kompresja}
-aaaaaaaaaaaaaaaa
+Do kompresji wykorzystaliśmy kodowanie Huffmana.
 
 \subsection{Patrole strażników}
-aaaaaaaaaaaaaaaa
+Programowanie dynamiczne.
 
 \printbibliography[heading=bibintoc]
 \end{document}
