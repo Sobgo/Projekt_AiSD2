@@ -1,0 +1,94 @@
+\documentclass{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+
+\usepackage{csquotes}
+
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{url}
+
+\usepackage[dvipsnames]{xcolor}
+\hypersetup{
+colorlinks=true,
+linkcolor=BrickRed,
+citecolor=Green,
+urlcolor=blue,
+frenchlinks=true,
+pdftitle={Atak z trzeciego wymiaru},
+pdfpagemode=FullScreen,
+}
+
+\usepackage[backend=biber, sorting=ynt]{biblatex}
+\addbibresource{bibliography.bib}
+
+\title{Atak z trzeciego wymiaru \\\large Sprawozdanie z projektu}
+\author{Mikołaj Juda \and Mateusz Sobkowiak \and Paulina Grabowska}
+\date{2024}
+
+\begin{document}
+\maketitle
+
+\section{Architektura}
+Problemy z wymagań projektu podzieliliśmy na podproblemy, w większości
+rozwiązywalne istniejącymi algorytmami.
+Rozwiązanie każdego podproblemu jest zaimplementowane jako biblioteka,
+która jest wykorzystywana przez program zapewniający interfejs użytkownika
+i minimalną logikę łączącą podproblemy. Pozwala to na proste testownaie
+i umożliwa łatwe wprowadzenie wielu interfejsów, na przykład
+tekstowy interfejs do użycia przez zewnętrzne programy i interfejs graficzny dla człowieka.
+
+\section{Przepływ pracy}
+Do organizacji pracy wykorzystywaliśmy narzędzia dostępne w serwisie Github.
+
+\noindent Przydzielanie i śledzenie zadań realizowaliśmy na tablicy Kanban w GitHub Projects.
+
+\noindent Kod rozwiązujący podproblemy był rozwijany na osobnych gałęziach,
+i łączony z główną gałęzią używając pull requestów po recenzji przez wszystkich członków zespołu.
+Używaliśmy też GitHub Actions do automatycznego uruchamiania lintera i testów.
+
+\section{Rozwiązania problemów}
+
+\subsection{Budowa płotu}
+
+\subsubsection{Długość płotu}
+Do wyznaczania otoczki wypukłaj wykorzystaliśmy algorytm Grahama.
+
+\noindent Testy jednostkowe zawierają sprawdzenie poprawności wyniku dla przypadków krańcowych
+i dla danych losowych w oparciu o sprawdzenie wypukłości i zawierania wszystkich punktów
+używając pomocniczych funkcji.
+\subsubsection{Parowanie tragarzy}
+Parowanie tragarzy zrealizowaliśmy jako znajdowanie największego skojarzenia w grafie dwudzielnym.
+Rozwiązanie zaimplementowaliśmy naiwnie używając algorytmu Edmondsa-Karpa ze względu na prostotę implementacji.
+Przy złożoności \(\mathcal{O}(|V||E|)\)\cite{cs6820matchingnotes}
+i fakcie, że algorytm uruchamiany jest tylko raz na początku planowania budowy,
+uznaliśmy, że nasze rozwiązanie jest wystarczająco wydajne.
+
+\noindent Testy jednostkowe sprawdzają czy wynik jest maksymalny,
+gdyż nie ma prostej metody na zweryfikowanie czy jest największy
+bez oblicznaia rozwiązania problemu.
+\subsubsection{Wyznaczanie dróg}
+Wyznaczanie najkrótszych dróg z fabryki do miejsca budowy płotu zaimplementowaliśmy używając algorytmu Dijkstry.
+
+\noindent Testy jednostkowe sprawdzają poprawność wyniku
+na podstawie porównania długości ścieżek z wcześniej wyznaczonymi poprawnymi wartościami
+i przejściu wyznaczonymi ścieżkami sprawdzając prawidłowość.
+
+\subsection{Zapisywanie melodii}
+\subsubsection{Zamiana fragmentów}
+Wyszukiwanie słów do zamiany w tekście zaimplementowaliśmy algorytmem Aho-Corasicka
+ze względu na możliwość wyszukiwania wielu wzorców jednocześnie.
+
+\noindent Testy jednostkowe sprawdzają poprawność wyniku
+dla przypadków prostych, granicznych i losowych na podstawie porównania
+z wynikiem algorytmu naiwnego.
+\subsubsection{Kompresja}
+Do kompresji wykorzystaliśmy kodowanie Huffmana.
+
+\subsection{Patrole strażników}
+Programowanie dynamiczne.
+
+\printbibliography[heading=bibintoc]
+\end{document}

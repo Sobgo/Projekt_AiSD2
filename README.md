@@ -29,3 +29,9 @@ Po zbudowaniu projektu pliki wykonywalne będą znajdowały się w katalogu `bui
     cmake --build build # przed testowaniem jeśli zostały wprowadzone zmiany
     ctest --test-dir build
 ```
+
+## sprawozdanie
+```bash
+    cd report
+    latexmk -pdf report.tex
+```
