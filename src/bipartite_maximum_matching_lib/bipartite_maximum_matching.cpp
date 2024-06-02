@@ -44,7 +44,7 @@ maxflow(size_t source, std::vector<std::vector<int_fast8_t>> network, size_t sin
 		while (current != source) {
 			const size_t current_parent =
 			    parent[current].value(); // NOLINT(bugprone-unchecked-optional-access)
-			                             // zakładamy, że bfs działą poprawnie
+			                             // zakładamy, że bfs działa poprawnie
 			network[current_parent][current] -= new_flow;
 			network[current][current_parent] += new_flow;
 
@@ -60,6 +60,7 @@ maxflow(size_t source, std::vector<std::vector<int_fast8_t>> network, size_t sin
 
 /***
  * @param pairs: Pairs of connected vertices. Indexing in each partition is separate.
+ * @return Pairs of matched vertices.
  */
 std::vector<std::pair<size_t, size_t>>
 bipartite_maximum_matching(const std::vector<std::pair<size_t, size_t>> &pairs) {

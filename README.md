@@ -21,9 +21,7 @@ catch2 (instalowany automatycznie przez cmake)
 
 ## uruchamianie
 
-```bash
-    ./build/Projekt_AiSD2
-```
+Po zbudowaniu projektu pliki wykonywalne będą znajdowały się w katalogu `build/bin`
 
 ## testowanie
 
