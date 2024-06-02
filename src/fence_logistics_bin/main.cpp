@@ -12,8 +12,8 @@
 using namespace std;
 
 double euclidean_distance(const pair<double, double> &a, const pair<double, double> &b) {
-	double dx = a.first - b.first;
-	double dy = a.second - b.second;
+	const double dx = a.first - b.first;
+	const double dy = a.second - b.second;
 	return sqrt(dx * dx + dy * dy);
 }
 
