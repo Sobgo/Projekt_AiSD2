@@ -8,6 +8,9 @@
 #include <string>
 #include <vector>
 
+/**
+ * @brief Pattern Matching
+ */
 namespace pattern_matching {
 using namespace std;
 

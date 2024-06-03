@@ -14,9 +14,9 @@ catch2 (instalowany automatycznie przez cmake)
 ## budowanie
 
 ```bash
-    mkdir build # jeżeli folder build nie istnieje
-    cmake -S . -B build
-    cmake --build build
+mkdir build # jeżeli folder build nie istnieje
+cmake -S . -B build
+cmake --build build
 ```
 
 ## uruchamianie
@@ -26,12 +26,22 @@ Po zbudowaniu projektu pliki wykonywalne będą znajdowały się w katalogu `bui
 ## testowanie
 
 ```bash
-    cmake --build build # przed testowaniem jeśli zostały wprowadzone zmiany
-    ctest --test-dir build
+cmake --build build # przed testowaniem jeśli zostały wprowadzone zmiany
+ctest --test-dir build
 ```
 
-## sprawozdanie
+## dokumentacja 
+
+Doxygen musi być zainstalowany
 ```bash
-    cd report
-    latexmk -pdf report.tex
+cmake -S . -B build
+cmake --build build --target doxygen
+```
+Wynikowa strona internetowa powstanie w katalogu `build/docs/html`
+
+## sprawozdanie
+
+```bash
+cd report
+latexmk -pdf report.tex
 ```

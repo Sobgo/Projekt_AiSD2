@@ -3,10 +3,13 @@
 #include <cstddef>
 #include <utility>
 #include <vector>
+
+/**
+ * @brief convex hull
+ */
 namespace convex_hull {
 
 using namespace std;
-using Point = pair<double, double>;
 
 #define x first  // NOLINT(cppcoreguidelines-macro-usage)
 #define y second // NOLINT(cppcoreguidelines-macro-usage)
@@ -20,14 +23,15 @@ double orientation(const Point &a, const Point &b, const Point &c) {
 }
 
 /**
- * O(nlogn)
+ * @brief Computes a convex hull
+ * @details Computes a convex hull using the Graham's scan algorithm in O(nlogn).
  * @param points vector of pairs where first is x coordinate and second is y coordinate of a point
- * @returns vector of input points indexes forming convex hull in counter-clockwise order
+ * @returns vector of input points indexes forming a convex hull in counter-clockwise order
  * starting from the point with the lowest y coordinate (and the lowest x coordinate in case of a
  * tie). The set of points is minimal, so if there are multiple points on the same line, only the
  * endpoints are included.
  */
-vector<size_t> convex_hull(const vector<Point> &points) {
+std::vector<std::size_t> convex_hull(const std::vector<Point> &points) {
 	if (points.empty()) return {};
 	if (points.size() == 1) return {0};
 

@@ -7,12 +7,13 @@
 
 namespace convex_hull {
 
-double distance(const std::pair<double, double> &a, const std::pair<double, double> &b);
+using Point = std::pair<double, double>;
 
-double orientation(const std::pair<double, double> &a, const std::pair<double, double> &b,
-                   const std::pair<double, double> &c);
+double distance(const Point &a, const Point &b);
 
-std::vector<size_t> convex_hull(const std::vector<std::pair<double, double>> &points);
+double orientation(const Point &a, const Point &b, const Point &c);
+
+std::vector<std::size_t> convex_hull(const std::vector<Point> &points);
 
 }
 
