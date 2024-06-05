@@ -30,13 +30,15 @@ cmake --build build # przed testowaniem jeśli zostały wprowadzone zmiany
 ctest --test-dir build
 ```
 
-## dokumentacja 
+## dokumentacja
 
 Doxygen musi być zainstalowany
+
 ```bash
 cmake -S . -B build
 cmake --build build --target doxygen
 ```
+
 Wynikowa strona internetowa powstanie w katalogu `build/docs/html`
 
 ## sprawozdanie
