@@ -1,26 +1,37 @@
 #include "data_compression.h"
 
-Node::Node(char character, int frequency) : ch(character), freq(frequency), left(nullptr), right(nullptr) {}
+#include <queue>
+#include <bitset>
+#include <functional>
 
-bool Compare::operator()(Node* left, Node* right) {
-	return left->freq > right->freq;
-}
+struct Node {
+	char ch;
+	int freq;
+	Node *left, *right;
 
-void generateCodes(Node* root, string str, unordered_map<char, string> &huffmanCode) {
-	if (!root) return;
+	Node(char ch, int freq, Node* left = nullptr, Node* right = nullptr)
+	    : ch(ch), freq(freq), left(left), right(right) {}
 
-	if (!root->left && !root->right) {
-		huffmanCode[root->ch] = str;
+	~Node() {
+		delete left;
+		delete right;
+	}
+};
+
+struct Compare {
+	bool operator()(Node* l, Node* r) {
+		return l->freq > r->freq;
+	}
+};
+
+void buildHuffmanTree(const std::string& text, std::unordered_map<char, std::pair<uint32_t, int>>& huffmanCode) {
+	std::unordered_map<char, int> freq;
+	for (char ch : text) {
+		freq[ch]++;
 	}
 
-	generateCodes(root->left, str + "0", huffmanCode);
-	generateCodes(root->right, str + "1", huffmanCode);
-}
-
-Node* buildHuffmanTree(unordered_map<char, int> &freq) {
-	priority_queue<Node*, vector<Node*>, Compare> pq;
-
-	for (auto pair : freq) {
+	std::priority_queue<Node*, std::vector<Node*>, Compare> pq;
+	for (auto& pair : freq) {
 		pq.push(new Node(pair.first, pair.second));
 	}
 
@@ -30,122 +41,99 @@ Node* buildHuffmanTree(unordered_map<char, int> &freq) {
 
 		int sum = left->freq + right->freq;
 		Node *newNode = new Node('\0', sum);
-		newNode->left = left;
-		newNode->right = right;
 		pq.push(newNode);
 	}
 
-	return pq.top();
-}
+	Node* root = pq.top();
+	std::unordered_map<char, std::string> tempCode;
+	std::string str;
+	std::function<void(Node*, std::string)> encode = [&](Node* node, std::string str) {
+		if (!node) return;
+		if (!node->left && !node->right) {
+			tempCode[node->ch] = str;
+		}
+		encode(node->left, str + "0");
+		encode(node->right, str + "1");
+	};
+	encode(root, str);
 
-void saveEncodedFile(const string &filename, const string &encodedStr, unordered_map<char, string> &huffmanCode) {
-	ofstream outFile(filename, ios::binary);
+	std::vector<std::pair<char, std::string>> sortedCodes(tempCode.begin(), tempCode.end());
+	std::sort(sortedCodes.begin(), sortedCodes.end(), [](auto &left, auto &right) {
+		return left.second.length() < right.second.length() ||
+		       (left.second.length() == right.second.length() && left.first < right.first);
+	});
 
-	// Write the Huffman codes map size
-	size_t mapSize = huffmanCode.size();
-	outFile.write(reinterpret_cast<char*>(&mapSize), sizeof(mapSize));
-
-	// Write the Huffman codes
-	for (auto pair : huffmanCode) {
-		outFile.write(&pair.first, sizeof(pair.first));
-		size_t codeSize = pair.second.size();
-		outFile.write(reinterpret_cast<char*>(&codeSize), sizeof(codeSize));
-		outFile.write(pair.second.c_str(), codeSize);
+	huffmanCode.clear();
+	uint32_t code = 0;
+	int prevLen = 0;
+	for (auto& pair : sortedCodes) {
+		int len = pair.second.length();
+		code <<= (len - prevLen);
+		huffmanCode[pair.first] = {code, len};
+		code++;
+		prevLen = len;
 	}
 
-	// Write the encoded string size
-	size_t encodedSize = encodedStr.size();
-	outFile.write(reinterpret_cast<char*>(&encodedSize), sizeof(encodedSize));
-
-	// Write the encoded string
-	outFile.write(encodedStr.c_str(), encodedSize);
-
-	outFile.close();
+	delete root;
 }
 
-void loadEncodedFile(const string &filename, string &encodedStr, unordered_map<char, string> &huffmanCode) {
-	ifstream inFile(filename, ios::binary);
-
-	// Read the Huffman codes map size
-	size_t mapSize;
-	inFile.read(reinterpret_cast<char*>(&mapSize), sizeof(mapSize));
-
-	// Read the Huffman codes
-	for (size_t i = 0; i < mapSize; ++i) {
-		char ch;
-		inFile.read(&ch, sizeof(ch));
-		size_t codeSize;
-		inFile.read(reinterpret_cast<char*>(&codeSize), sizeof(codeSize));
-		string code(codeSize, ' ');
-		inFile.read(&code[0], codeSize);
-		huffmanCode[ch] = code;
-	}
-
-	// Read the encoded string size
-	size_t encodedSize;
-	inFile.read(reinterpret_cast<char*>(&encodedSize), sizeof(encodedSize));
-
-	// Read the encoded string
-	encodedStr.resize(encodedSize);
-	inFile.read(&encodedStr[0], encodedSize);
-
-	inFile.close();
-}
-
-void compressFile(const string &inputFilename, const string &outputFilename) {
-	ifstream inFile(inputFilename);
-	if (!inFile.is_open()) {
-		cerr << "Error opening input file" << endl;
-		return;
-	}
-
-	unordered_map<char, int> freq;
-	string text((istreambuf_iterator<char>(inFile)), istreambuf_iterator<char>());
-	inFile.close();
+std::vector<uint8_t> compress(const std::string& text, std::unordered_map<char, std::pair<uint32_t, int>>& huffmanCode) {
+	buildHuffmanTree(text, huffmanCode);
+	std::vector<uint8_t> compressedText;
+	uint32_t buffer = 0;
+	int bitCount = 0;
 
 	for (char ch : text) {
-		freq[ch]++;
-	}
+		auto [code, len] = huffmanCode[ch];
+		buffer <<= len;
+		buffer |= code;
+		bitCount += len;
 
-	Node* root = buildHuffmanTree(freq);
-	unordered_map<char, string> huffmanCode;
-	generateCodes(root, "", huffmanCode);
-
-	string encodedStr;
-	for (char ch : text) {
-		encodedStr += huffmanCode[ch];
-	}
-
-	saveEncodedFile(outputFilename, encodedStr, huffmanCode);
-}
-
-void decompressFile(const string &inputFilename, const string &outputFilename) {
-	unordered_map<char, string> huffmanCode;
-	string encodedStr;
-	loadEncodedFile(inputFilename, encodedStr, huffmanCode);
-
-	unordered_map<string, char> reversedHuffmanCode;
-	for (auto pair : huffmanCode) {
-		reversedHuffmanCode[pair.second] = pair.first;
-	}
-
-	string currentCode;
-	string decompressedText;
-	for (char bit : encodedStr) {
-		currentCode += bit;
-		if (reversedHuffmanCode.find(currentCode) != reversedHuffmanCode.end()) {
-			decompressedText += reversedHuffmanCode[currentCode];
-			currentCode.clear();
+		while (bitCount >= 8) {
+			bitCount -= 8;
+			compressedText.push_back(buffer >> bitCount);
+			buffer &= (1 << bitCount) - 1;
 		}
 	}
 
-	ofstream outFile(outputFilename);
-	if (!outFile.is_open()) {
-		cerr << "Error opening output file" << endl;
-		return;
+	if (bitCount > 0) {
+		buffer <<= (8 - bitCount);
+		compressedText.push_back(buffer);
 	}
 
-	outFile << decompressedText;
-	outFile.close();
+	return compressedText;
 }
 
+std::string decompress(const std::vector<uint8_t>& encodedText, const std::unordered_map<char, std::pair<uint32_t, int>>& huffmanCode) {
+	std::unordered_map<uint32_t, std::pair<char, int>> reverseHuffmanCode;
+	for (auto &pair : huffmanCode) {
+		reverseHuffmanCode[pair.second.first] = {pair.first, pair.second.second};
+	}
+
+	std::string decodedText;
+	uint32_t buffer = 0;
+	int bitCount = 0;
+
+	for (uint8_t byte : encodedText) {
+		buffer = (buffer << 8) | byte;
+		bitCount += 8;
+
+		while (bitCount >= 8) {
+			bool found = false;
+			for (int len = 1; len <= 32 && len <= bitCount; len++) {
+				uint32_t code = buffer >> (bitCount - len);
+				auto it = reverseHuffmanCode.find(code);
+				if (it != reverseHuffmanCode.end() && it->second.second == len) {
+					decodedText += it->second.first;
+					bitCount -= len;
+					buffer &= (1 << bitCount) - 1;
+					found = true;
+					break;
+				}
+			}
+			if (!found) break;
+		}
+	}
+
+	return decodedText;
+}
