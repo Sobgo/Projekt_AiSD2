@@ -1,4 +1,4 @@
-# Dokumentacja projektu
+# Przegląd
 
 ## Autorzy
 

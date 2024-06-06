@@ -8,16 +8,24 @@ if(DOXYGEN_FOUND)
     set(DOXYGEN_EXTRACT_LOCAL_CLASSES NO)
     set(DOXYGEN_WARN_IF_UNDOCUMENTED NO)
 
+    include(FetchContent)
+    FetchContent_Declare(
+    DoxygenAwesome
+    GIT_REPOSITORY https://github.com/jothepro/doxygen-awesome-css.git
+    GIT_TAG        v2.3.3
+    )
+    FetchContent_MakeAvailable(DoxygenAwesome)
     set(CUSTOM_DOXYGEN_CSS
-        "${PROJECT_SOURCE_DIR}/doxygen-awesome-css/doxygen-awesome.css"
-        "${PROJECT_SOURCE_DIR}/doxygen-awesome-css/doxygen-awesome-sidebar-only.css"
+        "${doxygenawesome_SOURCE_DIR}/doxygen-awesome.css"
+        "${doxygenawesome_SOURCE_DIR}/doxygen-awesome-sidebar-only.css"
         "./custom.css"
     )
+    set(DOXYGEN_TREEVIEW_WIDTH 480)
 
     set(DOXYGEN_GENERATE_TREEVIEW YES)
     set(DOXYGEN_DISABLE_INDEX NO)
     set(DOXYGEN_FULL_SIDEBAR NO)
     set(DOXYGEN_HTML_EXTRA_STYLESHEET ${CUSTOM_DOXYGEN_CSS})
 
-    doxygen_add_docs(doxygen ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/mainpage.md)
+    doxygen_add_docs(doxygen ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/mainpage.md ${CUSTOM_DOXYGEN_CSS})
 endif()

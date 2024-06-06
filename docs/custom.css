@@ -2,7 +2,8 @@
 /* fix for search bar with longer description */
 
 html {
-    --top-nav-height: 150px
+    --top-nav-height: 150px;
+    --side-nav-fixed-width: 480px;
 }
 
 @media screen and (min-width: 768px) {
