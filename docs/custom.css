@@ -3,7 +3,7 @@
 
 html {
     --top-nav-height: 150px;
-    --side-nav-fixed-width: 480px;
+    --side-nav-fixed-width: 350px;
 }
 
 @media screen and (min-width: 768px) {

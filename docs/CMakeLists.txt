@@ -20,7 +20,7 @@ if(DOXYGEN_FOUND)
         "${doxygenawesome_SOURCE_DIR}/doxygen-awesome-sidebar-only.css"
         "./custom.css"
     )
-    set(DOXYGEN_TREEVIEW_WIDTH 480)
+    set(DOXYGEN_TREEVIEW_WIDTH 350)
 
     set(DOXYGEN_GENERATE_TREEVIEW YES)
     set(DOXYGEN_DISABLE_INDEX NO)
