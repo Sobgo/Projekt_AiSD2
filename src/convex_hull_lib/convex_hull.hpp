@@ -9,7 +9,7 @@ namespace convex_hull {
 
 using Point = std::pair<double, double>;
 
-double distance(const Point &a, const Point &b);
+double distance_sq(const Point &a, const Point &b);
 
 double orientation(const Point &a, const Point &b, const Point &c);
 
