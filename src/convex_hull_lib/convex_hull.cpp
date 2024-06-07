@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <utility>
 #include <vector>
-
 namespace convex_hull {
 
 using namespace std;
