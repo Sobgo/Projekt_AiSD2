@@ -1,5 +1,7 @@
 #include <cmath>
 #include <cstddef>
+#include <cstring>
+#include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -17,44 +19,85 @@ double euclidean_distance(const pair<double, double> &a, const pair<double, doub
 	return sqrt(dx * dx + dy * dy);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+	if (argc < 3) {
+		cerr << "Usage: " << argv[0] << " <input file> <output file> [-v]\n";
+		return 1;
+	}
+	bool verbose_option = argc >= 4 && strcmp(argv[3], "-v") == 0;
+	ifstream infile(argv[1]);
+	if (!infile) {
+		cerr << "Error: could not open input file\n";
+		return 1;
+	}
+	ofstream outfile(argv[2]);
+	if (!outfile) {
+		cerr << "Error: could not open output file\n";
+		return 1;
+	}
+
 	vector<pair<double, double>> points;
+	size_t factory_idx = 0;
+
 	string line;
-	while (getline(cin, line) && !line.empty()) {
+	while (getline(infile, line)) {
 		istringstream iss(line);
 		double x = 0;
 		double y = 0;
-		iss >> x >> y;
-		points.emplace_back(x, y);
+		iss >> x;
+		if (iss >> y) {
+			points.emplace_back(x, y);
+		} else {
+			factory_idx = x;
+			break;
+		}
 	}
+	if (points.empty()) {
+		cerr << "Error: no points entered\n";
+		return 1;
+	}
+	if (factory_idx < 1) {
+		cerr << "Error: factory index has to be entered and greater than 0\n";
+		return 1;
+	}
+	factory_idx--;
+	if (factory_idx >= points.size()) {
+		cerr << "Error: factory index out of bounds\n";
+		return 1;
+	}
+
 	auto convex_hull = convex_hull::convex_hull(points);
 	double fence_length = 0;
-
 	for (int i = 0; i < convex_hull.size() - 1; i++) {
 		fence_length += euclidean_distance(points[convex_hull[i]], points[convex_hull[i + 1]]);
 	}
 	fence_length += euclidean_distance(points[convex_hull.back()], points[convex_hull.front()]);
 
-	cout << fence_length << '\n';
-
-	size_t factory_idx = 0;
-	cin >> factory_idx;
-	factory_idx--;
-
 	vector<pair<size_t, size_t>> edges;
 	size_t a = 0;
 	size_t b = 0;
-	while (cin >> a >> b) {
+	while (infile >> a >> b) {
 		edges.emplace_back(a - 1, b - 1);
 	}
 
 	auto routes = sssp_plane::sssp_plane(points, edges, factory_idx, convex_hull);
 
-	for (const auto &route : routes) {
-		cout << '\n' << route.destination + 1 << ' ' << route.distance;
-		for (const auto &point : route.path) {
-			cout << ' ' << point + 1;
-		}
+	if (verbose_option) {
+		outfile << "Fence length: " << fence_length << '\n';
+		outfile << "Routes:\n";
+	} else {
+		outfile << fence_length << '\n';
 	}
-	cout << '\n';
+	for (const auto &route : routes) {
+		if (verbose_option) {
+			outfile << "destination: " << route.destination + 1 << ", length: " << route.distance
+			        << ", path:";
+		} else {
+			outfile << route.destination + 1 << ' ' << route.distance;
+		}
+		for (const auto &point : route.path) {
+			outfile << ' ' << point + 1;
+		}
+		outfile << '\n';
+	}
 }
