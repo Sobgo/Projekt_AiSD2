@@ -20,11 +20,12 @@ double euclidean_distance(const pair<double, double> &a, const pair<double, doub
 }
 
 int main(int argc, char *argv[]) {
+	// NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 	if (argc < 3) {
 		cerr << "Usage: " << argv[0] << " <input file> <output file> [-v]\n";
 		return 1;
 	}
-	bool verbose_option = argc >= 4 && strcmp(argv[3], "-v") == 0;
+	const bool verbose_option = argc >= 4 && strcmp(argv[3], "-v") == 0;
 	ifstream infile(argv[1]);
 	if (!infile) {
 		cerr << "Error: could not open input file\n";
@@ -35,6 +36,7 @@ int main(int argc, char *argv[]) {
 		cerr << "Error: could not open output file\n";
 		return 1;
 	}
+	// NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 
 	vector<pair<double, double>> points;
 	size_t factory_idx = 0;
