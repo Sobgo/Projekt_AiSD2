@@ -1,0 +1,56 @@
+body {
+	background-color: #030303;
+	font-family: 'Roboto', sans-serif;
+	font-size: 16px;
+	margin: 0;
+	padding: 0;
+}
+
+canvas {
+	border: 1px solid #FFF;
+	display: block;
+	margin: 0 auto;
+}
+
+button {
+	background-color: #FFF;
+	border: 0;
+	border-radius: 5px;
+	color: #030303;
+	cursor: pointer;
+	font-size: 16px;
+	margin: 0 auto;
+	padding: 10px 20px;
+}
+
+button:hover {
+	background-color: #CCC;
+}
+
+.controls {
+	padding-top: 20px;
+	width: 100vw;
+	display: flex;
+	justify-content: center;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.wrapper {
+	margin-top: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#points {
+	resize: none;
+	background-color: #CCC;
+	height: 600px;
+	width: 200px;
+
+}
