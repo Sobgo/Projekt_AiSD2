@@ -86,9 +86,21 @@ int main(int argc, char *argv[]) {
 
 	if (verbose_option) {
 		outfile << "Fence length: " << fence_length << '\n';
+		outfile << "Fence:";
+		for (const auto &point : convex_hull) {
+			outfile << ' ' << point + 1;
+		}
+		outfile << '\n';
 		outfile << "Routes:\n";
 	} else {
 		outfile << fence_length << '\n';
+		if (!convex_hull.empty()) {
+			outfile << convex_hull.front() + 1;
+		}
+		for (size_t i = 1; i < convex_hull.size(); i++) {
+			outfile << ' ' << convex_hull[i] + 1;
+		}
+		outfile << '\n';
 	}
 	for (const auto &route : routes) {
 		if (verbose_option) {
