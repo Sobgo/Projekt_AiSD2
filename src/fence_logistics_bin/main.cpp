@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
 		if (iss >> y) {
 			points.emplace_back(x, y);
 		} else {
-			factory_idx = x;
+			factory_idx = (size_t)x;
 			break;
 		}
 	}
