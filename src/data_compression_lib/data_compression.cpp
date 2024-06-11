@@ -1,15 +1,15 @@
-#include "data_compression.h"
-
-#include <queue>
-#include <bitset>
+#include "data_compression.hpp"
 #include <functional>
+#include <queue>
+
+namespace data_compression {
 
 struct Node {
 	char ch;
 	int freq;
 	Node *left, *right;
 
-	Node(char ch, int freq, Node* left = nullptr, Node* right = nullptr)
+	Node(char ch, int freq, Node *left = nullptr, Node *right = nullptr)
 	    : ch(ch), freq(freq), left(left), right(right) {}
 
 	~Node() {
@@ -19,35 +19,39 @@ struct Node {
 };
 
 struct Compare {
-	bool operator()(Node* l, Node* r) {
-		return l->freq > r->freq;
-	}
+	bool operator()(Node *l, Node *r) { return l->freq > r->freq; }
 };
 
-void buildHuffmanTree(const std::string& text, std::unordered_map<char, std::pair<uint32_t, int>>& huffmanCode) {
+void buildHuffmanTree(const std::string &text,
+                      std::unordered_map<char, std::pair<uint32_t, int>> huffmanCode) {
 	std::unordered_map<char, int> freq;
 	for (char ch : text) {
 		freq[ch]++;
 	}
 
-	std::priority_queue<Node*, std::vector<Node*>, Compare> pq;
-	for (auto& pair : freq) {
+	std::priority_queue<Node *, std::vector<Node *>, Compare> pq;
+	for (auto &pair : freq) {
 		pq.push(new Node(pair.first, pair.second));
 	}
 
 	while (pq.size() != 1) {
-		Node *left = pq.top(); pq.pop();
-		Node *right = pq.top(); pq.pop();
+		Node *left = pq.top();
+		pq.pop();
+		Node *right = pq.top();
+		pq.pop();
 
 		int sum = left->freq + right->freq;
 		Node *newNode = new Node('\0', sum);
+
+		newNode->left = left;
+		newNode->right = right;
 		pq.push(newNode);
 	}
 
-	Node* root = pq.top();
+	Node *root = pq.top();
 	std::unordered_map<char, std::string> tempCode;
 	std::string str;
-	std::function<void(Node*, std::string)> encode = [&](Node* node, std::string str) {
+	std::function<void(Node *, std::string)> encode = [&](Node *node, std::string str) {
 		if (!node) return;
 		if (!node->left && !node->right) {
 			tempCode[node->ch] = str;
@@ -66,7 +70,7 @@ void buildHuffmanTree(const std::string& text, std::unordered_map<char, std::pai
 	huffmanCode.clear();
 	uint32_t code = 0;
 	int prevLen = 0;
-	for (auto& pair : sortedCodes) {
+	for (auto &pair : sortedCodes) {
 		int len = pair.second.length();
 		code <<= (len - prevLen);
 		huffmanCode[pair.first] = {code, len};
@@ -77,7 +81,8 @@ void buildHuffmanTree(const std::string& text, std::unordered_map<char, std::pai
 	delete root;
 }
 
-std::vector<uint8_t> compress(const std::string& text, std::unordered_map<char, std::pair<uint32_t, int>>& huffmanCode) {
+std::vector<uint8_t> compress(const std::string &text,
+                              std::unordered_map<char, std::pair<uint32_t, int>> huffmanCode) {
 	buildHuffmanTree(text, huffmanCode);
 	std::vector<uint8_t> compressedText;
 	uint32_t buffer = 0;
@@ -104,7 +109,8 @@ std::vector<uint8_t> compress(const std::string& text, std::unordered_map<char, 
 	return compressedText;
 }
 
-std::string decompress(const std::vector<uint8_t>& encodedText, const std::unordered_map<char, std::pair<uint32_t, int>>& huffmanCode) {
+std::string decompress(const std::vector<uint8_t> &encodedText,
+                       const std::unordered_map<char, std::pair<uint32_t, int>> &huffmanCode) {
 	std::unordered_map<uint32_t, std::pair<char, int>> reverseHuffmanCode;
 	for (auto &pair : huffmanCode) {
 		reverseHuffmanCode[pair.second.first] = {pair.first, pair.second.second};
@@ -136,4 +142,5 @@ std::string decompress(const std::vector<uint8_t>& encodedText, const std::unord
 	}
 
 	return decodedText;
+}
 }

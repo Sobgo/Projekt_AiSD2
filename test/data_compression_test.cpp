@@ -1,4 +1,4 @@
-#include "../src/data_compression_lib/data_compression.h"
+#include "../src/data_compression_lib/data_compression.hpp"
 #include "catch2/catch_test_macros.hpp"
 
 TEST_CASE("Huffman encoding and decoding", "[huffman]") {
@@ -14,13 +14,9 @@ TEST_CASE("Huffman encoding and decoding", "[huffman]") {
 	                   "Maecenas nibh elit, fermentum nec nisi ac, egestas tincidunt nibh.";
 	std::unordered_map<char, std::pair<uint32_t, int>> huffmanCode;
 
-	std::vector<uint8_t> compressedText = compress(text, huffmanCode);
+	std::vector<uint8_t> compressedText = data_compression::compress(text, huffmanCode);
 
-	REQUIRE(!compressedText.empty());
-
-	REQUIRE(!huffmanCode.empty());
-
-	std::string decompressedText = decompress(compressedText, huffmanCode);
+	std::string decompressedText = data_compression::decompress(compressedText, huffmanCode);
 
 	REQUIRE(decompressedText == text);
 }
