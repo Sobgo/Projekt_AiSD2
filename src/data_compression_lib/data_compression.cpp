@@ -1,4 +1,6 @@
 #include "data_compression.hpp"
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <queue>
 
@@ -22,8 +24,7 @@ struct Compare {
 	bool operator()(Node *l, Node *r) { return l->freq > r->freq; }
 };
 
-void buildHuffmanTree(const std::string &text,
-                      std::unordered_map<char, std::pair<uint32_t, int>> huffmanCode) {
+HuffmanCode generate_huffman_code(const std::string &text) {
 	std::unordered_map<char, int> freq;
 	for (char ch : text) {
 		freq[ch]++;
@@ -67,7 +68,7 @@ void buildHuffmanTree(const std::string &text,
 		       (left.second.length() == right.second.length() && left.first < right.first);
 	});
 
-	huffmanCode.clear();
+	HuffmanCode huffmanCode;
 	uint32_t code = 0;
 	int prevLen = 0;
 	for (auto &pair : sortedCodes) {
@@ -79,17 +80,17 @@ void buildHuffmanTree(const std::string &text,
 	}
 
 	delete root;
+
+	return huffmanCode;
 }
 
-std::vector<uint8_t> compress(const std::string &text,
-                              std::unordered_map<char, std::pair<uint32_t, int>> huffmanCode) {
-	buildHuffmanTree(text, huffmanCode);
+std::vector<uint8_t> compress(const std::string &text, const HuffmanCode &huffmanCode) {
 	std::vector<uint8_t> compressedText;
 	uint32_t buffer = 0;
 	int bitCount = 0;
 
 	for (char ch : text) {
-		auto [code, len] = huffmanCode[ch];
+		auto [code, len] = huffmanCode.at(ch);
 		buffer <<= len;
 		buffer |= code;
 		bitCount += len;
@@ -109,8 +110,7 @@ std::vector<uint8_t> compress(const std::string &text,
 	return compressedText;
 }
 
-std::string decompress(const std::vector<uint8_t> &encodedText,
-                       const std::unordered_map<char, std::pair<uint32_t, int>> &huffmanCode) {
+std::string decompress(const std::vector<uint8_t> &encodedText, const HuffmanCode &huffmanCode) {
 	std::unordered_map<uint32_t, std::pair<char, int>> reverseHuffmanCode;
 	for (auto &pair : huffmanCode) {
 		reverseHuffmanCode[pair.second.first] = {pair.first, pair.second.second};

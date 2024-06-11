@@ -1,6 +1,7 @@
 #ifndef DATA_COMPRESSION_HPP
 #define DATA_COMPRESSION_HPP
 
+#include <cstdint>
 #include <iostream>
 #include <string>
 #include <unordered_map>
@@ -8,14 +9,13 @@
 
 namespace data_compression {
 
-struct Node;
+using HuffmanCode = std::unordered_map<char, std::pair<uint32_t, int>>;
 
-void buildHuffmanTree(const std::string &text,
-                      std::unordered_map<char, std::pair<uint32_t, int>> huffmanCode);
-std::vector<uint8_t> compress(const std::string &text,
-                              std::unordered_map<char, std::pair<uint32_t, int>> huffmanCode);
-std::string decompress(const std::vector<uint8_t> &encodedText,
-                       const std::unordered_map<char, std::pair<uint32_t, int>> &huffmanCode);
+HuffmanCode generate_huffman_code(const std::string &text);
+
+std::vector<uint8_t> compress(const std::string &text, const HuffmanCode &huffmanCode);
+
+std::string decompress(const std::vector<uint8_t> &encodedText, const HuffmanCode &huffmanCode);
 
 }
 
