@@ -51,7 +51,7 @@ int main() {
 	auto routes = sssp_plane::sssp_plane(points, edges, factory_idx, convex_hull);
 
 	for (const auto &route : routes) {
-		cout << '\n' << route.destination + 1 << ' ' << route.distance;
+		cout << '\n' << route.destination + 1 << ' ' << route.length;
 		for (const auto &point : route.path) {
 			cout << ' ' << point + 1;
 		}

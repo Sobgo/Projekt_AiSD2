@@ -9,10 +9,13 @@
 #include <utility>
 #include <vector>
 
+/**
+ * @brief maximum cardinality matching in bipartite graphs
+ */
 namespace bipartite_maximum_matching {
 
-int_fast8_t bfs(size_t start, std::vector<std::vector<int_fast8_t>> &graph,
-                std::vector<std::optional<size_t>> &parent, size_t end) {
+int_fast8_t bfs(std::size_t start, std::vector<std::vector<int_fast8_t>> &graph,
+                std::vector<std::optional<size_t>> &parent, std::size_t end) {
 	std::queue<std::pair<size_t, int_fast8_t>> q;
 	parent.assign(parent.size(), std::nullopt);
 	q.emplace(start, std::numeric_limits<int_fast8_t>::max());
@@ -58,12 +61,13 @@ maxflow(size_t source, std::vector<std::vector<int_fast8_t>> network, size_t sin
 	return flow;
 }
 
-/***
+/**
+ * @brief Find a maximum cardinality matching in a bipartite graph.
  * @param pairs: Pairs of connected vertices. Indexing in each partition is separate.
  * @return Pairs of matched vertices.
  */
-std::vector<std::pair<size_t, size_t>>
-bipartite_maximum_matching(const std::vector<std::pair<size_t, size_t>> &pairs) {
+std::vector<std::pair<std::size_t, std::size_t>>
+bipartite_maximum_matching(const std::vector<std::pair<std::size_t, std::size_t>> &pairs) {
 	if (pairs.empty()) {
 		return {};
 	}
