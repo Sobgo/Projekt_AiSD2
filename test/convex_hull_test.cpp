@@ -1,4 +1,3 @@
-#include "../src/convex_hull_lib/convex_hull.hpp"
 #include <algorithm>
 #include <catch2/catch_test_macros.hpp>
 #include <ctime>
@@ -6,6 +5,8 @@
 #include <set>
 #include <utility>
 #include <vector>
+
+#include "../src/convex_hull_lib/convex_hull.hpp"
 
 using namespace std;
 using Point = pair<double, double>;
@@ -20,11 +21,15 @@ SCENARIO("Convex Hull is calculated correctly") {
 		vector<Point> out = {{1, 1}, {2, 3}, {3, 2}};
 
 		WHEN("Convex Hull is calculated") {
-			vector<Point> hull = convex_hull::convex_hull(in);
+			vector<size_t> hull = convex_hull::convex_hull(in);
+			vector<Point> hull_points;
+			for (size_t i : hull) {
+				hull_points.push_back(in[i]);
+			}
 
 			THEN("It matches the expected output") {
-				REQUIRE(hull.size() == out.size());
-				REQUIRE(is_subset(hull, out));
+				REQUIRE(hull_points.size() == out.size());
+				REQUIRE(is_subset(hull_points, out));
 			}
 		}
 	}
@@ -33,7 +38,7 @@ SCENARIO("Convex Hull is calculated correctly") {
 		vector<Point> in;
 
 		WHEN("Convex Hull is calculated") {
-			vector<Point> hull = convex_hull::convex_hull(in);
+			vector<size_t> hull = convex_hull::convex_hull(in);
 
 			THEN("It is empty") { REQUIRE(hull.empty()); }
 		}
@@ -43,9 +48,13 @@ SCENARIO("Convex Hull is calculated correctly") {
 		vector<Point> in = {{7.3, 8.23}};
 
 		WHEN("Convex Hull is calculated") {
-			vector<Point> hull = convex_hull::convex_hull(in);
+			vector<size_t> hull = convex_hull::convex_hull(in);
+			vector<Point> hull_points;
+			for (size_t i : hull) {
+				hull_points.push_back(in[i]);
+			}
 
-			THEN("It is the same point") { REQUIRE(hull == in); }
+			THEN("It is the same point") { REQUIRE(hull_points == in); }
 		}
 	}
 
@@ -53,11 +62,15 @@ SCENARIO("Convex Hull is calculated correctly") {
 		vector<Point> in = {{3.14, 2.71}, {1.61, 9.81}};
 
 		WHEN("Convex Hull is calculated") {
-			vector<Point> hull = convex_hull::convex_hull(in);
+			vector<size_t> hull = convex_hull::convex_hull(in);
+			vector<Point> hull_points;
+			for (size_t i : hull) {
+				hull_points.push_back(in[i]);
+			}
 
 			THEN("It is the same set") {
-				REQUIRE(hull.size() == in.size());
-				REQUIRE(is_subset(hull, in));
+				REQUIRE(hull_points.size() == in.size());
+				REQUIRE(is_subset(hull_points, in));
 			}
 		}
 	}
@@ -66,12 +79,16 @@ SCENARIO("Convex Hull is calculated correctly") {
 		vector<Point> in = {{1, 1}, {2, 2}, {3, 3}};
 
 		WHEN("Convex Hull is calculated") {
-			vector<Point> hull = convex_hull::convex_hull(in);
+			vector<size_t> hull = convex_hull::convex_hull(in);
+			vector<Point> hull_points;
+			for (size_t i : hull) {
+				hull_points.push_back(in[i]);
+			}
 
-			THEN("The hull contains only the first and last points") {
-				REQUIRE(hull.size() == 2);
-				REQUIRE(is_subset(hull, in));
-				REQUIRE(find(hull.begin(), hull.end(), in[1]) == hull.end());
+			THEN("It contains only the first and last points") {
+				REQUIRE(hull_points.size() == 2);
+				REQUIRE(is_subset(hull_points, in));
+				REQUIRE(find(hull_points.begin(), hull_points.end(), in[1]) == hull_points.end());
 			}
 		}
 	}
@@ -80,12 +97,17 @@ SCENARIO("Convex Hull is calculated correctly") {
 		vector<Point> in = {{1, 1}, {1, 2}, {1, 3}};
 
 		WHEN("Convex Hull is calculated") {
-			vector<Point> hull = convex_hull::convex_hull(in);
+			vector<size_t> hull = convex_hull::convex_hull(in);
+			vector<Point> hull_points;
+
+			for (size_t i : hull) {
+				hull_points.push_back(in[i]);
+			}
 
 			THEN("The hull contains only the first and last points") {
-				REQUIRE(hull.size() == 2);
-				REQUIRE(is_subset(hull, in));
-				REQUIRE(find(hull.begin(), hull.end(), in[1]) == hull.end());
+				REQUIRE(hull_points.size() == 2);
+				REQUIRE(is_subset(hull_points, in));
+				REQUIRE(find(hull_points.begin(), hull_points.end(), in[1]) == hull_points.end());
 			}
 		}
 	}
@@ -94,12 +116,17 @@ SCENARIO("Convex Hull is calculated correctly") {
 		vector<Point> in = {{1, 1}, {2, 1}, {3, 1}};
 
 		WHEN("Convex Hull is calculated") {
-			vector<Point> hull = convex_hull::convex_hull(in);
+			vector<size_t> hull = convex_hull::convex_hull(in);
+			vector<Point> hull_points;
+
+			for (size_t i : hull) {
+				hull_points.push_back(in[i]);
+			}
 
 			THEN("The hull contains only the first and last points") {
-				REQUIRE(hull.size() == 2);
-				REQUIRE(is_subset(hull, in));
-				REQUIRE(find(hull.begin(), hull.end(), in[1]) == hull.end());
+				REQUIRE(hull_points.size() == 2);
+				REQUIRE(is_subset(hull_points, in));
+				REQUIRE(find(hull_points.begin(), hull_points.end(), in[1]) == hull_points.end());
 			}
 		}
 	}
@@ -120,14 +147,19 @@ SCENARIO("Convex Hull is calculated correctly") {
 				}
 
 				vector<Point> in_vec(in.begin(), in.end());
-				vector<Point> hull = convex_hull::convex_hull(in_vec);
+				vector<size_t> hull = convex_hull::convex_hull(in_vec);
+				vector<Point> hull_points;
 
-				THEN("It is a subset of the input") { REQUIRE(is_subset(hull, in_vec)); }
+				for (size_t i : hull) {
+					hull_points.push_back(in_vec[i]);
+				}
 
-				THEN("It is convex") { REQUIRE(is_convex(hull)); }
+				THEN("It is a subset of the input") { REQUIRE(is_subset(hull_points, in_vec)); }
+
+				THEN("It is convex") { REQUIRE(is_convex(hull_points)); }
 
 				THEN("All input points are inside the hull") {
-					REQUIRE(all_inside_polygon(in_vec, hull));
+					REQUIRE(all_inside_polygon(in_vec, hull_points));
 				}
 			}
 		}

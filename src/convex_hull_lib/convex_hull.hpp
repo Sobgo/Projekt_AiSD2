@@ -1,6 +1,7 @@
 #ifndef CONVEX_HULL_HPP
 #define CONVEX_HULL_HPP
 
+#include <cstddef>
 #include <utility>
 #include <vector>
 
@@ -11,7 +12,7 @@ double distance(const std::pair<double, double> &a, const std::pair<double, doub
 double orientation(const std::pair<double, double> &a, const std::pair<double, double> &b,
                    const std::pair<double, double> &c);
 
-std::vector<std::pair<double, double>> convex_hull(std::vector<std::pair<double, double>> points);
+std::vector<size_t> convex_hull(const std::vector<std::pair<double, double>> &points);
 
 }
 
