@@ -1,35 +1,46 @@
-#include "dynamic_optimal_path.h"
+#include "dynamic_optimal_path.hpp"
 #include <algorithm>
-#include <vector>
+#include <climits>
+#include <cstdint>
 
-std::vector<int> findOptimalPath(std::vector<int>& nums) {
-	int n = nums.size();
-	std::vector<int> dp(n, -1); // dp[i] stores the previous index that leads to index i with the minimum jumps
+namespace find_optimal_path {
+
+std::pair<std::vector<std::size_t>, int> optimalPath(const std::vector<std::size_t> &convexHullPoints,
+                                                     const std::vector<int> &brightness, int maxStops) {
+
+	std::vector<int> dp(convexHullPoints.size(), INT_MAX);
+
+	std::vector<std::size_t> previous(convexHullPoints.size(), -1);
 
 	dp[0] = 0;
 
-	// Iterate through the array to fill dp table
-	for (int i = 1; i < n; ++i) {
-		for (int j = 0; j < i; ++j) {
-			if (dp[j] != -1 && j + nums[j] >= i) { // If it's possible to reach index j and from there to index i
-				if (dp[i] == -1 || dp[j] + 1 < dp[i]) {
-					dp[i] = dp[j] + 1; // Update the minimum jumps needed to reach index i
+	for (std::size_t i = 0; i < convexHullPoints.size(); ++i) {
+		for (std::size_t j = 1; j <= maxStops && i + j < convexHullPoints.size(); ++j) {
+			std::size_t next = i + j;
+			if (brightness[convexHullPoints[i]] >
+			    brightness[convexHullPoints[next]]) {
+				if (dp[i] < dp[next]) {
+					dp[next] = dp[i];
+					previous[next] = i;
+				}
+			} else {
+				if (dp[i] + 1 < dp[next]) {
+					dp[next] = dp[i] + 1;
+					previous[next] = i;
 				}
 			}
 		}
 	}
 
-	// Backtrack to find the optimal path
-	std::vector<int> path;
-	int index = n - 1;
-	while (index != 0) {
-		path.push_back(index);
-		index = dp[index];
+	std::vector<std::size_t> path;
+	for (std::size_t i = convexHullPoints.size() - 1; i != SIZE_MAX; i = previous[i]) {
+		path.push_back(convexHullPoints[i]);
 	}
-	path.push_back(0); // Add the first index
-
-	// Reverse the path to print it in the correct order
 	std::reverse(path.begin(), path.end());
 
-	return path;
+	int minMelodyCount = dp[convexHullPoints.size() - 1];
+
+	return {path, minMelodyCount};
 }
+
+} // namespace find_optimal_path
