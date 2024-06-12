@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <fstream>
 #include <iostream>
 #include <utility>
 #include <vector>
@@ -7,16 +8,33 @@
 
 using namespace std;
 
-int main() {
+int main(int argc, char *argv[]) {
+	// NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+	if (argc < 2) {
+		cerr << "Usage: " << argv[0] << " <input file> <output file>\n";
+		return 1;
+	}
+	ifstream infile(argv[1]);
+	if (!infile) {
+		cerr << "Error: could not open input file\n";
+		return 1;
+	}
+	ofstream outfile(argv[2]);
+	if (!outfile) {
+		cerr << "Error: could not open output file\n";
+		return 1;
+	}
+	// NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+
 	vector<pair<size_t, size_t>> input;
 	size_t a = 0;
 	size_t b = 0;
-	while (cin >> a >> b) {
+	while (infile >> a >> b) {
 		input.emplace_back(a - 1, b - 1);
 	}
 	auto result = bipartite_maximum_matching::bipartite_maximum_matching(input);
 	for (auto &p : result) {
-		cout << p.first + 1 << " " << p.second + 1 << '\n';
+		outfile << p.first + 1 << " " << p.second + 1 << '\n';
 	}
 
 	return 0;
