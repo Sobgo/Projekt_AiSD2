@@ -8,6 +8,10 @@
 #include <utility>
 #include <vector>
 
+// TODO: Improve memory management
+// NOLINTBEGIN(cppcoreguidelines-special-member-functions)
+// NOLINTBEGIN(cppcoreguidelines-owning-memory)
+
 namespace data_compression {
 
 struct Node {
@@ -146,4 +150,8 @@ std::string decompress(const std::vector<uint8_t> &encodedText, const HuffmanCod
 
 	return decodedText;
 }
+
+// NOLINTEND(cppcoreguidelines-owning-memory)
+// NOLINTEND(cppcoreguidelines-special-member-functions)
+
 }
