@@ -19,6 +19,7 @@ target_link_libraries(tests PRIVATE convex_hull)
 target_link_libraries(tests PRIVATE bipartite_maximum_matching)
 target_link_libraries(tests PRIVATE pattern_matching)
 target_link_libraries(tests PRIVATE sssp_plane)
+target_link_libraries(tests PRIVATE dynamic_optimal_path)
 
 include(CTest)
 include(Catch)
