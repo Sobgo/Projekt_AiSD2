@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <functional>
 #include <queue>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -19,12 +20,12 @@ struct Node {
 	int freq;
 	Node *left, *right;
 
-	Node(char ch, int freq, Node *left = nullptr, Node *right = nullptr)
+	Node(char ch = '\0', int freq = 0, Node *left = nullptr, Node *right = nullptr)
 	    : ch(ch), freq(freq), left(left), right(right) {}
 
 	~Node() {
-		delete left;
-		delete right;
+		if (left != nullptr) delete left;
+		if (right != nullptr) delete right;
 	}
 };
 
@@ -33,6 +34,7 @@ struct Compare {
 };
 
 HuffmanCode generate_huffman_code(const std::string &text) {
+	if (text.empty()) return {};
 	std::unordered_map<char, int> freq;
 	for (const char ch : text) {
 		freq[ch]++;
@@ -58,6 +60,12 @@ HuffmanCode generate_huffman_code(const std::string &text) {
 	}
 
 	Node *root = pq.top();
+	if (root->ch != '\0') {
+		Node *newRoot = new Node('\0', root->freq);
+		newRoot->left = root;
+		root = newRoot;
+	}
+
 	std::unordered_map<char, std::string> tempCode;
 	std::function<void(Node *, std::string)> encode = [&](Node *node, const std::string &str) {
 		if (node == nullptr) return;
@@ -91,60 +99,55 @@ HuffmanCode generate_huffman_code(const std::string &text) {
 	return huffmanCode;
 }
 
-std::vector<uint8_t> compress(const std::string &text, const HuffmanCode &huffmanCode) {
-	std::vector<uint8_t> compressedText;
-	uint32_t buffer = 0;
-	int bitCount = 0;
+std::vector<bool> compress(const std::string &text, const HuffmanCode &huffmanCode) {
+	std::vector<bool> compressedText;
 
 	for (const char ch : text) {
 		auto [code, len] = huffmanCode.at(ch);
-		buffer <<= len;
-		buffer |= code;
-		bitCount += len;
-
-		while (bitCount >= 8) {
-			bitCount -= 8;
-			compressedText.push_back(buffer >> bitCount);
-			buffer &= (1 << bitCount) - 1;
+		for (int i = len - 1; i >= 0; i--) {
+			compressedText.push_back((code >> i) & 1);
 		}
-	}
-
-	if (bitCount > 0) {
-		buffer <<= (8 - bitCount);
-		compressedText.push_back(buffer);
 	}
 
 	return compressedText;
 }
 
-std::string decompress(const std::vector<uint8_t> &encodedText, const HuffmanCode &huffmanCode) {
-	std::unordered_map<uint32_t, std::pair<char, int>> reverseHuffmanCode;
-	for (const auto &pair : huffmanCode) {
-		reverseHuffmanCode[pair.second.first] = {pair.first, pair.second.second};
+std::string decompress(const std::vector<bool> &encodedText, const HuffmanCode &huffmanCode) {
+	std::string decodedText;
+
+	Node root;
+	for (const auto [ch, code_len] : huffmanCode) {
+		const auto [code, len] = code_len;
+		Node *current = &root;
+		for (int i = len - 1; i >= 0; i--) {
+			if ((code >> i) & 1) {
+				if (current->right == nullptr) {
+					current->right = new Node();
+				}
+				current = current->right;
+			} else {
+				if (current->left == nullptr) {
+					current->left = new Node();
+				}
+				current = current->left;
+			}
+		}
+		current->ch = ch;
 	}
 
-	std::string decodedText;
-	uint32_t buffer = 0;
-	int bitCount = 0;
+	Node *current = &root;
+	for (const bool bit : encodedText) {
+		if (bit) {
+			current = current->right;
+		} else {
+			current = current->left;
+		}
 
-	for (const uint8_t byte : encodedText) {
-		buffer = (buffer << 8) | byte;
-		bitCount += 8;
+		if (current == nullptr) throw std::runtime_error("Invalid encoded text");
 
-		while (bitCount >= 8) {
-			bool found = false;
-			for (int len = 1; len <= 32 && len <= bitCount; len++) {
-				const uint32_t code = buffer >> (bitCount - len);
-				auto it = reverseHuffmanCode.find(code);
-				if (it != reverseHuffmanCode.end() && it->second.second == len) {
-					decodedText += it->second.first;
-					bitCount -= len;
-					buffer &= (1 << bitCount) - 1;
-					found = true;
-					break;
-				}
-			}
-			if (!found) break;
+		if (current->ch != '\0') {
+			decodedText += current->ch;
+			current = &root;
 		}
 	}
 
