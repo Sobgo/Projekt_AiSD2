@@ -23,6 +23,20 @@ catch2 (instalowany automatycznie przez cmake)
 
 Po zbudowaniu projektu pliki wykonywalne będą znajdowały się w katalogu `build/bin`
 
+Aplikacja przeglądarkowa do problemu budowy płotu:
+
+```bash
+    # w jednym terminalu
+    cd ./ui/api && npm install -d && npm start
+```
+
+```bash
+    # w drugim terminalu
+    cd ./ui/frontend && npm install -d && npm run dev
+```
+
+Aplikacja będzie dostępna pod adresem <http://localhost:5173/>
+
 ## testowanie
 
 ```bash
@@ -31,6 +45,7 @@ Po zbudowaniu projektu pliki wykonywalne będą znajdowały się w katalogu `bui
 ```
 
 ## sprawozdanie
+
 ```bash
     cd report
     latexmk -pdf report.tex
