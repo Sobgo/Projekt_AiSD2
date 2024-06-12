@@ -1,0 +1,1 @@
+add_library(sssp_plane sssp_plane.cpp)

@@ -14,20 +14,36 @@ catch2 (instalowany automatycznie przez cmake)
 ## budowanie
 
 ```bash
-    mkdir build # jeżeli folder build nie istnieje
-    cmake -S . -B build
-    cmake --build build
+mkdir build # jeżeli folder build nie istnieje
+cmake -S . -B build
+cmake --build build
 ```
 
 ## uruchamianie
 
-```bash
-    ./build/Projekt_AiSD2
-```
+Po zbudowaniu projektu pliki wykonywalne będą znajdowały się w katalogu `build/bin`
 
 ## testowanie
 
 ```bash
-    cmake --build build # przed testowaniem jeśli zostały wprowadzone zmiany
-    ctest --test-dir build
+cmake --build build # przed testowaniem jeśli zostały wprowadzone zmiany
+ctest --test-dir build
+```
+
+## dokumentacja
+
+Doxygen musi być zainstalowany
+
+```bash
+cmake -S . -B build
+cmake --build build --target doxygen
+```
+
+Wynikowa strona internetowa powstanie w katalogu `build/docs/html`
+
+## sprawozdanie
+
+```bash
+cd report
+latexmk -pdf report.tex
 ```
