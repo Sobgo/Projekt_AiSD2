@@ -24,8 +24,8 @@ struct Node {
 	    : ch(ch), freq(freq), left(left), right(right) {}
 
 	~Node() {
-		if (left != nullptr) delete left;
-		if (right != nullptr) delete right;
+		delete left;
+		delete right;
 	}
 };
 

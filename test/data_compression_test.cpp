@@ -1,9 +1,10 @@
 #include "../src/data_compression_lib/data_compression.hpp"
 #include "catch2/catch_test_macros.hpp"
 #include <random>
+
 namespace compression_test {
+
 std::string generate_random_string(size_t length, size_t alphabet_size);
-}
 
 TEST_CASE("Huffman encoding and decoding", "[huffman]") {
 	std::string text =
@@ -60,8 +61,6 @@ TEST_CASE("Randomized text compression and decompression", "[huffman]") {
 		REQUIRE(decompressedText == text);
 	}
 }
-
-namespace compression_test {
 
 std::string generate_random_string(size_t length, size_t alphabet_size) {
 	std::string s = "";
