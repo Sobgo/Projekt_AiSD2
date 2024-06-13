@@ -3,9 +3,9 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <string>
 #include <utility>
 #include <vector>
-#include <string>
 
 #include "../data_compression_lib/data_compression.hpp"
 
