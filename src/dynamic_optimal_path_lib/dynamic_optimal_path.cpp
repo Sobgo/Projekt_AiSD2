@@ -1,12 +1,16 @@
 #include "dynamic_optimal_path.hpp"
 #include <algorithm>
 #include <climits>
+#include <cstddef>
 #include <cstdint>
+#include <utility>
+#include <vector>
 
 namespace find_optimal_path {
 
-std::pair<std::vector<std::size_t>, int> optimalPath(const std::vector<std::size_t> &convexHullPoints,
-                                                     const std::vector<int> &brightness, int maxStops) {
+std::pair<std::vector<std::size_t>, int>
+optimalPath(const std::vector<std::size_t> &convexHullPoints, const std::vector<int> &brightness,
+            int maxStops) {
 
 	std::vector<int> dp(convexHullPoints.size(), INT_MAX);
 
@@ -16,9 +20,8 @@ std::pair<std::vector<std::size_t>, int> optimalPath(const std::vector<std::size
 
 	for (std::size_t i = 0; i < convexHullPoints.size(); ++i) {
 		for (std::size_t j = 1; j <= maxStops && i + j < convexHullPoints.size(); ++j) {
-			std::size_t next = i + j;
-			if (brightness[convexHullPoints[i]] >
-			    brightness[convexHullPoints[next]]) {
+			const std::size_t next = i + j;
+			if (brightness[convexHullPoints[i]] > brightness[convexHullPoints[next]]) {
 				if (dp[i] < dp[next]) {
 					dp[next] = dp[i];
 					previous[next] = i;
@@ -38,9 +41,9 @@ std::pair<std::vector<std::size_t>, int> optimalPath(const std::vector<std::size
 	}
 	std::reverse(path.begin(), path.end());
 
-	int minMelodyCount = dp[convexHullPoints.size() - 1];
+	const int minMelodyCount = dp[convexHullPoints.size() - 1];
 
 	return {path, minMelodyCount};
 }
 
-} // namespace find_optimal_path
+}
