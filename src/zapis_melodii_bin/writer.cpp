@@ -85,15 +85,15 @@ int main(int argc, char *argv[]) {
 			                          '\x7F' + std::move(to) + '\x7F');
 			patterns.push_back(replacements.back().first);
 			for (const char &c : replacements.back().first) {
-				if (c < 0 || c >= 127) {
-					cerr << "Error: replacement strings contain non-ASCII characters or \\x7F\n";
+				if (c < 0 || c > 127) {
+					cerr << "Error: replacement strings contain non-ASCII characters\n";
 					return 1;
 				}
 				alphabet_set.insert(c);
 			}
 			for (const char &c : replacements.back().second) {
-				if (c < 0 || c >= 127) {
-					cerr << "Error: replacement strings contain non-ASCII characters or \\x7F\n";
+				if (c < 0 || c > 127) {
+					cerr << "Error: replacement strings contain non-ASCII characters\n";
 					return 1;
 				}
 				alphabet_set.insert(c);
