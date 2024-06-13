@@ -111,8 +111,8 @@ Poziom jasności punktu \(j\) powoduje aktualizację \(dp[j]\) zgodnie z warunka
 śledzone są poprzednie punkty na optymalnej ścieżce. Każdy krok wstecz prowadzi do punktu, z którego
 przybyliśmy, co gwarantuje, że odtworzona ścieżka jest zgodna z minimalnymi odsłuchami melodii
 zapisanymi w \(dp\). Zaimplementowana w ten sposób funkcja gwarantuje znalezienie optymalnego rozwiązania
-przy niskiej złożoności obliczeniowej \(\mathcal{O}(n \cdot maxStops)\) i pamięciowej \(\mathcal{O}(n)\),
-gdzie \(n\) to ilość punktów do obejścia, a \(maxStops\) to
+przy niskiej złożoności obliczeniowej \(\mathcal{O}(n \cdot maxBeforeStop)\) i pamięciowej \(\mathcal{O}(n)\),
+gdzie \(n\) to ilość punktów do obejścia, a \(maxbeforeStop\) to
 maksymalna liczba punktów po których strażnik musi się zatrzymać.
 
 \noindent Testy jednostkowe sprawdzają poprawność działania algorytmu porównując wynik
