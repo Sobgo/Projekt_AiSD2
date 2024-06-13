@@ -100,8 +100,23 @@ do jednorazowego zapisywania danych w celach archiwalnych.
 przykładowych tekstów, tekstów losowych oraz przypadków granicznych.
 
 \subsection{Patrole strażników}
-Programowanie dynamiczne.
+Znajdowanie optymalnej trasy dla strażników, która minimializuje ilość odsłuchań melodii
+zaimplementowaliśmy algorytmem dynamicznym.
+Dowód poprawności:
+Funkcja opiera się o stan dp[i], który reprezentuje minimalną liczbę odsłań
+melodii potrzebną do dotarcia do punktu i. Początkowo dla dp[0] jest on ustawiony na 0,
+bo zaczynamy w punkcie 0 bez odsłuchań melodii.
+Dla każdego punktu i funkcja sprawdza możliwe punkty j, do których można dotrzeć z punktu i.
+Poziom jasności punktu j powoduje aktualizację dp[j] zgodnie z warunkami. Za pomocą tablicy previous
+śledzone sąpoprzednie punkty na optymalnej ścieżce. Każdy krok wstecz prowadzi do punktu, z którego
+przybyliśmy,co gwarantuje, że odtworzona ścieżka jest zgodna z minimalnymi odsłuchami melodii
+zapisanymi w dp. Zaimplementowana w ten sposób funkcja gwarantuje znalezienie optymalnego rozwiązania
+przy niskiej złożoności O(n * maxStops), gdzie n = ilość punktów do obejścia, maxStops =
+maksymalna liczba punktów, po których strażnik musi się zatrzymać.
 
+\noindent Testy jednostkowe sprawdzają poprawność działania algorytmu porównując wynik
+do obliczeń ręcznych jak i do wyniku funkcji, która znajduje wszystkie możliwe ścieżki i
+zwraca wszystkie, które spełniają kryterium minimalnej liczby odsłuchań melodii.
 \section{Dokumentacja}
 Dokumentacja jest generowana przez Doxygen na podstawie komentarzy w kodzie.
 
