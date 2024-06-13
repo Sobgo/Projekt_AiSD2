@@ -6,7 +6,7 @@ export type Subset<T> = {
 
 export type Graph = {
     vertices: paper.PointLike[];
-    edges: [number, number][];
+    edges: [number, number, boolean, string][];
     vertexValues?: any[];
     edgeValues?: any[];
 }

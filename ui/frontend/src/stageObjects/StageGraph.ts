@@ -9,7 +9,7 @@ export class StageGraph extends StageBaseObject {
     declare drawOptions: Subset<GraphOptions>;
 
     vertices: paper.Point[];
-    edges: [number, number][];
+    edges: [number, number, boolean, string][];
     vertexValues?: string[];
     edgeValues?: string[];
     dragable: boolean;
@@ -20,26 +20,26 @@ export class StageGraph extends StageBaseObject {
         this.edges = graph.edges;
         this.vertexValues = graph.vertexValues;
         this.edgeValues = graph.edgeValues;
-        this.dragable = options?.dragable;
+        this.dragable = options?.dragable === undefined ? true : options.dragable;
     }
 
     draw() {
         const graphGroup = new paper.Group();
 
-        const drawEdge = (edge: [number, number], index: number) => {
+        const drawEdge = (edge: [number, number, boolean, string], index: number) => {
             const edgeGroup = new paper.Group();
 
-            const edgePath = new paper.Path.Line(
-                this.vertices[edge[0]].add(this.position),
-                this.vertices[edge[1]].add(this.position)
-            );
+            const pos1 = this.vertices[edge[0]].add(this.position);
+            const pos2 = this.vertices[edge[1]].add(this.position);
 
-            edgePath.strokeColor = new paper.Color(this.drawOptions.edge_color ?? "white");
+            const edgePath = new paper.Path.Line(pos1, pos2);
+
+            edgePath.strokeColor = new paper.Color(edge[3]);
             edgeGroup.addChild(edgePath);
             
             if (this.edgeValues) {
                 const edgeLabel = new StageLabel(edgePath.position, this.edgeValues[index], {
-                    font_color: this.drawOptions.edge_color ?? "white",
+                    font_color: edge[3],
                     font_size: 12, 
                     align: "center" , 
                     justification: "center",
@@ -47,6 +47,21 @@ export class StageGraph extends StageBaseObject {
                     outline_width: 2
                 });
                 edgeGroup.addChild(edgeLabel.draw());
+            }
+
+            // TODO improve
+            if (edge[2]) {
+                // position 10 pixels away from pos2 in the direction of pos1
+                const pos3 = pos2.subtract(pos2.subtract(pos1).normalize(12));
+
+                const arrow = new paper.Path.RegularPolygon(pos3, 3, 5);
+                arrow.strokeColor = edgePath.strokeColor;
+                arrow.fillColor = edgePath.strokeColor;
+
+                const angle = pos2.subtract(pos1).angle;
+                arrow.rotate(angle + 90);
+
+                edgeGroup.addChild(arrow);
             }
             
             return edgeGroup;

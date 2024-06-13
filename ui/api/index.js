@@ -1,5 +1,5 @@
 import express from "express";
-import { exec } from "node:child_process";
+import { execFile } from "node:child_process";
 import cors from "cors";
 
 const app = express();
@@ -22,7 +22,7 @@ app.get("/fence_logistics", (req, res, next) => {
             stderr: '',
         };
 
-        const childProcess = exec(cmd, (_err, stdout, stderr) => {
+        const childProcess = execFile(cmd, ['--', '--'], (_err, stdout, stderr) => {
             response.stderr = stderr;
             response.stdout = stdout;
             res.json(response);
