@@ -11,6 +11,9 @@
 #include <utility>
 #include <vector>
 
+/**
+ * @brief single source shortest path on a 2d plane
+ */
 namespace sssp_plane {
 
 double distance(const std::pair<double, double> &a, const std::pair<double, double> &b) {
@@ -46,15 +49,18 @@ void dijkstra(const std::vector<std::vector<AdjEdge>> &adj_list, const std::size
 	}
 }
 
-SSSP_Path::SSSP_Path(std::size_t destination, std::vector<std::size_t> path, double distance)
-    : destination(destination), path(std::move(path)), distance(distance) {}
+SSSP_Path::SSSP_Path(std::size_t destination, const std::vector<std::size_t> &path, double distance)
+    : destination(destination), path(path), length(distance) {}
+
+SSSP_Path::SSSP_Path(std::size_t destination, std::vector<std::size_t> &&path, double distance)
+    : destination(destination), path(std::move(path)), length(distance) {}
 
 bool SSSP_Path::operator==(const SSSP_Path &other) const {
-	return destination == other.destination && path == other.path && distance == other.distance;
+	return destination == other.destination && path == other.path && length == other.length;
 }
 
-/***
- * @brief Computes Single Source Shortest Path on a 2d plane
+/**
+ * @brief Computes single source shortest path on a 2d plane
  * @details Uses Dijkstra's algorithm
  * @param points: points on the plane
  * @param edges: edges described by indeces of points in `points`, each edge must be defined once

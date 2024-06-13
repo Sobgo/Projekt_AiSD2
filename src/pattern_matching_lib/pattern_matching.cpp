@@ -1,3 +1,5 @@
+#include "pattern_matching.hpp"
+
 #include <array>
 #include <cassert>
 #include <cstddef>
@@ -8,12 +10,49 @@
 #include <string>
 #include <vector>
 
+/**
+ * @brief pattern matching
+ */
 namespace pattern_matching {
+
 using namespace std;
 
+/**
+ * @brief Helper class for Aho-Corasick algorithm.
+ * @details This class represents a trie with additional links for Aho-Corasick algorithm.
+ * Then it can be irreversibly converted to an automaton to perform pattern matching.
+ */
 class AhoCorasick {
 	size_t ALPHABET_SIZE;
 
+	/**
+	 * @brief Node of the trie.
+	 *
+	 * @property children vector of size ALPHABET_SIZE where the i-th element represents the index
+	 * of the child node for the i-th character in the alphabet. Index can be nullopt if there is no
+	 * child node.
+	 *
+	 * @property go vector of size ALPHABET_SIZE where the i-th element represents the index of the
+	 * node to go from current node when the next character is i. Index can be nullopt if there is
+	 * no such node, however, it is guaranteed that there is always a node to go to after converting
+	 * the trie to an automaton.
+	 *
+	 * @property parent index of the parent node. It is nullopt for the root node.
+	 * @property parent_char the character that leads to the current node from the parent node. It
+	 * is nullopt for the root node.
+	 *
+	 * @property suffix_link index of node which is longest proper suffix of the string
+	 * corresponding to the current node. In case of the root node, it will point to itself.
+	 * The suffix link is always defined after converting the trie to an automaton.
+	 *
+	 * @property exit_link index of next terminal node in the suffix link path. This is computed in
+	 * a lazy manner when needed, so the node it points to can be nullopt or may not actually be
+	 * terminal. However, after converting the trie to an automaton, it will always point to some
+	 * node in the suffix link path.
+	 *
+	 * @property is_terminal true if the string corresponding to the current node is a pattern.
+	 * @property terminal_ids indices of patterns that end at the current node.
+	 */
 	struct Node {
 		vector<optional<size_t>> children, go;
 		optional<size_t> parent, parent_char, suffix_link = nullopt, exit_link = nullopt;
@@ -29,13 +68,30 @@ class AhoCorasick {
 		}
 	};
 
+	/**
+	 * @brief vector of nodes representing the trie or automaton.
+	 */
 	vector<Node> T;
+
+	/**
+	 * @brief flag indicating whether the trie has been converted to an automaton.
+	 */
 	bool converted = false;
 
   public:
 	AhoCorasick(size_t alphabet_size) : T(1, Node(alphabet_size)), ALPHABET_SIZE(alphabet_size) {}
+
+	/**
+	 * @param v index of the node.
+	 * @returns the node at index v.
+	 */
 	Node get_node(size_t v) { return T[v]; }
 
+	/**
+	 * @brief Adds a string to the trie.
+	 * @param s vector of indices of characters in the alphabet that form the string.
+	 * @param idx index of the pattern corresponding to the string.
+	 */
 	void add_string(const vector<size_t> &s, size_t idx) {
 		assert(!converted);
 
@@ -56,6 +112,14 @@ class AhoCorasick {
 		T[cur].terminal_ids.emplace_back(idx);
 	}
 
+	/**
+	 * @brief Returns the index of the longest proper suffix node.
+	 * @details This is a wrapper around the suffix_link property of the node. Check the property
+	 * description for more details.
+	 * @param v index of the current node.
+	 * @returns index of the longest proper suffix node.
+
+	*/
 	size_t link(size_t v) {
 		assert(converted);
 
@@ -64,6 +128,14 @@ class AhoCorasick {
 		return link.value();
 	}
 
+	/**
+	 * @brief Returns the index of the node to go from state v with character c.
+	 * @details This is a wrapper around the go property of the node. Check the property description
+	 * for more details.
+	 * @param v index of the current node.
+	 * @param c index of the character in the alphabet.
+	 * @returns index of the node to go to.
+	 */
 	size_t go(size_t v, size_t c) {
 		assert(converted);
 
@@ -72,6 +144,13 @@ class AhoCorasick {
 		return go.value();
 	}
 
+	/**
+	 * @brief Returns the index of the next terminal node in the suffix link path.
+	 * @details This is a wrapper around the exit_link property of the node. Check the property
+	 * description for more details.
+	 * @param v index of the current node.
+	 * @returns index of the next terminal node in the suffix link path.
+	 */
 	size_t exit(size_t v) {
 		assert(converted);
 
@@ -87,6 +166,12 @@ class AhoCorasick {
 		return cur.value();
 	}
 
+	/**
+	 * @brief Converts the trie to an automaton.
+	 * @details This method computes the suffix links and go values for each node in the trie using
+	 * BFS traversal. This is irreversible so after calling this method it is not possible to add
+	 * new strings to the trie.
+	 */
 	void convert_to_automaton() {
 		assert(!converted);
 		converted = true;
@@ -131,8 +216,11 @@ class AhoCorasick {
  * @returns a vector of vectors where the i-th vector contains the starting indices of all
  * occurrences of the i-th pattern in the text.
  */
-vector<vector<size_t>> aho_corasick(const string &alphabet, const string &text,
-                                    const vector<string> &patterns) {
+std::vector<std::vector<std::size_t>> aho_corasick(const std::string &alphabet,
+                                                   const std::string &text,
+                                                   const std::vector<std::string> &patterns) {
+
+	// Map each character in the alphabet to an index.
 
 	array<optional<size_t>, numeric_limits<unsigned char>::max() + 1> M;
 
@@ -143,10 +231,13 @@ vector<vector<size_t>> aho_corasick(const string &alphabet, const string &text,
 		++iter;
 	}
 
+	// Add all patterns to the trie.
+
 	AhoCorasick ac(iter);
 
 	for (size_t i = 0; i < patterns.size(); ++i) {
 		vector<size_t> pattern;
+
 		for (const char &c : patterns[i]) {
 			const auto &c_val = M.at(c);
 
@@ -163,7 +254,11 @@ vector<vector<size_t>> aho_corasick(const string &alphabet, const string &text,
 		ac.add_string(pattern, i);
 	}
 
+	// Convert the trie to an automaton.
+
 	ac.convert_to_automaton();
+
+	// Perform the search by passing the text through the automaton.
 
 	vector<vector<size_t>> res(patterns.size());
 
