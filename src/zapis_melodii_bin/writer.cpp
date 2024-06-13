@@ -1,11 +1,12 @@
 #include <algorithm>
-#include <bitset>
+#include <cstdint>
 #include <cstring>
 #include <fstream>
 #include <iostream>
 #include <iterator>
 #include <set>
 #include <sstream>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -73,7 +74,8 @@ int main(int argc, char *argv[]) {
 		set<char> alphabet_set = {'\x7F'};
 		while (getline(replacementsfile, line)) {
 			istringstream ss(line);
-			string from, to;
+			string from;
+			string to;
 			ss >> from >> to;
 			replacements.emplace_back('\x7F' + std::move(from) + '\x7F',
 			                          '\x7F' + std::move(to) + '\x7F');
@@ -109,8 +111,7 @@ int main(int argc, char *argv[]) {
 		auto matching_result = pattern_matching::aho_corasick(alphabet, input, patterns);
 		for (size_t i = 0; i < matching_result.size(); ++i) {
 			const auto &matches = matching_result[i];
-			for (size_t j = 0; j < matches.size(); ++j) {
-				const auto &match = matches[j];
+			for (const auto &match : matches) {
 				const auto &replacement = replacements[i];
 				input.replace(match, replacement.first.size(), replacement.second);
 			}
@@ -140,21 +141,21 @@ int main(int argc, char *argv[]) {
 			    }
 			    return a.second.second < b.second.second;
 		    });
-		int max_bitlen = codebook.back().second.second;
+		const int max_bitlen = codebook.back().second.second;
 		vector<char> codebook_chars;
 		vector<int> codebook_char_num_per_bitlen(max_bitlen, 0);
 		for (const auto &entry : codebook) {
 			codebook_chars.push_back(entry.first);
 			codebook_char_num_per_bitlen[entry.second.second - 1]++;
 		}
-		uint8_t num_chars = codebook_chars.size();
+		const uint8_t num_chars = codebook_chars.size();
 		for (int i = 7; i >= 0; i--) {
 			codebook_bits.push_back((num_chars >> i) & 1);
 		}
 		for (int i = 7; i >= 0; i--) {
 			codebook_bits.push_back((max_bitlen >> i) & 1);
 		}
-		uint8_t max_bits_to_encode_num_chars = int_log2(num_chars) + 1;
+		const uint8_t max_bits_to_encode_num_chars = int_log2(num_chars) + 1;
 		for (int i = 1; i <= max_bitlen; i++) {
 			for (int j = max_bits_to_encode_num_chars - 1; j >= 0; j--) {
 				codebook_bits.push_back((codebook_char_num_per_bitlen[i - 1] >> j) & 1);
