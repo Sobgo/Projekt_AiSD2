@@ -77,13 +77,25 @@ int main(int argc, char *argv[]) {
 			string from;
 			string to;
 			ss >> from >> to;
+			if (from.size() != to.size()) {
+				cerr << "Error: replacement strings must be of the same length\n";
+				return 1;
+			}
 			replacements.emplace_back('\x7F' + std::move(from) + '\x7F',
 			                          '\x7F' + std::move(to) + '\x7F');
 			patterns.push_back(replacements.back().first);
 			for (const char &c : replacements.back().first) {
+				if (c < 0 || c >= 127) {
+					cerr << "Error: replacement strings contain non-ASCII characters or \\x7F\n";
+					return 1;
+				}
 				alphabet_set.insert(c);
 			}
 			for (const char &c : replacements.back().second) {
+				if (c < 0 || c >= 127) {
+					cerr << "Error: replacement strings contain non-ASCII characters or \\x7F\n";
+					return 1;
+				}
 				alphabet_set.insert(c);
 			}
 		}

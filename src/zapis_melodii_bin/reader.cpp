@@ -1,7 +1,11 @@
+#include <cstdint>
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <iterator>
+#include <utility>
 #include <vector>
+#include <string>
 
 #include "../data_compression_lib/data_compression.hpp"
 
@@ -63,7 +67,7 @@ int main(int argc, char *argv[]) {
 	}
 	size_t current_idx = 0;
 
-	uint8_t num_chars;
+	uint8_t num_chars = 0;
 	for (int i = 0; i < 8; i++) {
 		num_chars <<= 1;
 		num_chars |= data[current_idx++];
@@ -118,7 +122,6 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	data.erase(data.begin(), data.begin() + current_idx);
-	current_idx = 0;
-	string decoded_text = data_compression::decompress(data, huffman_code);
+	const string decoded_text = data_compression::decompress(data, huffman_code);
 	*outstream << decoded_text;
 }
