@@ -6,10 +6,23 @@
 #include <utility>
 #include <vector>
 
+/**
+ * @brief dynamic_optimal_path
+ */
 namespace dynamic_optimal_path {
 
+/**
+ * @brief Finds path with minimal number of stops required.
+ * @details Finds path with minimal number of stops required and number of resting spots. Path is
+ * returned as vector of indices of points from input vector where guard needs to stop. Exact
+ * resting stops can be aquired by simple linear search where previous stop from path has more
+ * brightness than next stop.
+ * @param brightness vector of brightness values at each point
+ * @param maxBeforeStop maximum number of points thar can be skipped before stop is required
+ * @return vector of indices of optimal path and minimal number of required stops as pair
+ */
 std::pair<std::vector<std::size_t>, int> find_optimal_path(const std::vector<int> &brightness,
-                                                           int maxStops) {
+                                                           int maxBeforeStop) {
 
 	std::vector<int> dp(brightness.size(), INT_MAX);
 
@@ -18,7 +31,7 @@ std::pair<std::vector<std::size_t>, int> find_optimal_path(const std::vector<int
 	dp[0] = 0;
 
 	for (std::size_t i = 0; i < brightness.size(); ++i) {
-		for (std::size_t j = 1; j <= maxStops && i + j < brightness.size(); ++j) {
+		for (std::size_t j = 1; j <= maxBeforeStop && i + j < brightness.size(); ++j) {
 			const std::size_t next = i + j;
 			if (brightness[i] > brightness[next]) {
 				if (dp[i] < dp[next]) {
