@@ -1,6 +1,9 @@
 # editor
 .vscode
 
+# ui
+node_modules
+
 # cmake
 build
 CMakeLists.txt.user

@@ -13,6 +13,9 @@
 // NOLINTBEGIN(cppcoreguidelines-special-member-functions)
 // NOLINTBEGIN(cppcoreguidelines-owning-memory)
 
+/**
+ * @brief data_compression
+ */
 namespace data_compression {
 
 struct Node {
@@ -33,6 +36,12 @@ struct Compare {
 	bool operator()(Node *l, Node *r) { return l->freq > r->freq; }
 };
 
+/**
+ * @brief Generates Huffman code for given text.
+ * @details Generates Huffman code as a map of characters to pairs of value and bit length.
+ * @param text text to generate Huffman code for
+ * @return Huffman code for given text
+ */
 HuffmanCode generate_huffman_code(const std::string &text) {
 	if (text.empty()) return {};
 	std::unordered_map<char, int> freq;
@@ -104,6 +113,14 @@ HuffmanCode generate_huffman_code(const std::string &text) {
 	return huffmanCode;
 }
 
+/**
+ * @brief Compresses given text using provided Huffman code.
+ * @details Compresses text by replacing each character with its corresponding Huffman code
+ * (obtained from `generate_huffman_code()` function)
+ * @param text text to compress
+ * @param huffmanCode Huffman code to use for compression
+ * @return compressed text as a vector of bits (boolean values)
+ */
 std::vector<bool> compress(const std::string &text, const HuffmanCode &huffmanCode) {
 	std::vector<bool> compressedText;
 
@@ -117,6 +134,14 @@ std::vector<bool> compress(const std::string &text, const HuffmanCode &huffmanCo
 	return compressedText;
 }
 
+/**
+ * @brief Decompresses given text using provided Huffman code.
+ * @details Decompresses text by replacing each Huffman code with its corresponding character
+ * (obtained from `generate_huffman_code()` function)
+ * @param encodedText text to decompress encoded as vector of bits (boolean values)
+ * @param huffmanCode Huffman code to use for decompression
+ * @return decompressed text
+ */
 std::string decompress(const std::vector<bool> &encodedText, const HuffmanCode &huffmanCode) {
 	std::string decodedText;
 

@@ -208,7 +208,7 @@ class AhoCorasick {
 
 /**
  * Aho-Corasick algorithm for multiple pattern matching.
- * Constructs an automaton in O(sum of lengths of patterns * ALPHABET_SIZE)
+ * Constructs an automaton in O(sum of lengths of patterns * ALPHABET_SIZE).
  * Then the search is done in O(text length + answer length).
  * @param alphabet string of characters that can appear in the text
  * @param text string of alphabet characters to search in
