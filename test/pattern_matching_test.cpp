@@ -9,6 +9,8 @@
 
 using namespace std;
 
+namespace pattern_matching_test {
+
 vector<vector<size_t>> find_patterns(const string &text, const vector<string> &patterns);
 string generate_random_string(size_t length, size_t alphabet_size);
 
@@ -278,4 +280,6 @@ vector<vector<size_t>> find_patterns(const string &text, const vector<string> &p
 	}
 
 	return res;
+}
+
 }
