@@ -120,10 +120,10 @@ int main(int argc, char *argv[]) {
 	}
 	for (const auto &route : routes) {
 		if (verbose_option) {
-			*outstream << "destination: " << route.destination + 1 << ", length: " << route.distance
+			*outstream << "destination: " << route.destination + 1 << ", length: " << route.length
 			           << ", path:";
 		} else {
-			*outstream << route.destination + 1 << ' ' << route.distance;
+			*outstream << route.destination + 1 << ' ' << route.length;
 		}
 		for (const auto &point : route.path) {
 			*outstream << ' ' << point + 1;

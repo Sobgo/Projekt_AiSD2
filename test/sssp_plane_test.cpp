@@ -54,7 +54,7 @@ TEST_CASE("sssp_plane multiple_same_len", "[sssp_plane]") {
 	auto result = sssp_plane::sssp_plane(points, edges, start, destinations);
 
 	REQUIRE(!result.empty());
-	REQUIRE(result[0].distance == 2);
+	REQUIRE(result[0].length == 2);
 	REQUIRE(is_valid_path(result[0], points, edges, start));
 }
 
@@ -91,7 +91,7 @@ bool is_valid_path(const sssp_plane::SSSP_Path &path, const std::vector<sssp_pla
 	if (path.path.empty()) {
 		return false;
 	}
-	if (path.path.size() == 1 && path.distance != 0) {
+	if (path.path.size() == 1 && path.length != 0) {
 		return false;
 	}
 	if (path.path.front() != start) {
@@ -109,5 +109,5 @@ bool is_valid_path(const sssp_plane::SSSP_Path &path, const std::vector<sssp_pla
 		}
 		distance += euclidian_distance(points[path.path[i]], points[path.path[i + 1]]);
 	}
-	return distance == path.distance;
+	return distance == path.length;
 }
