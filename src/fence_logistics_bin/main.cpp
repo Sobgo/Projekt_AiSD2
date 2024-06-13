@@ -20,21 +20,37 @@ double euclidean_distance(const pair<double, double> &a, const pair<double, doub
 }
 
 int main(int argc, char *argv[]) {
+	istream *instream = nullptr;
+	ostream *outstream = nullptr;
+
+	ifstream infile;
+	ofstream outfile;
+
 	// NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 	if (argc < 3) {
 		cerr << "Usage: " << argv[0] << " <input file> <output file> [-v]\n";
 		return 1;
 	}
 	const bool verbose_option = argc >= 4 && strcmp(argv[3], "-v") == 0;
-	ifstream infile(argv[1]);
-	if (!infile) {
-		cerr << "Error: could not open input file\n";
-		return 1;
+	if (strcmp(argv[1], "--") == 0) {
+		instream = &cin;
+	} else {
+		infile.open(argv[1]);
+		if (!infile) {
+			cerr << "Error: could not open input file\n";
+			return 1;
+		}
+		instream = &infile;
 	}
-	ofstream outfile(argv[2]);
-	if (!outfile) {
-		cerr << "Error: could not open output file\n";
-		return 1;
+	if (strcmp(argv[2], "--") == 0) {
+		outstream = &cout;
+	} else {
+		outfile.open(argv[2]);
+		if (!outfile) {
+			cerr << "Error: could not open output file\n";
+			return 1;
+		}
+		outstream = &outfile;
 	}
 	// NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 
@@ -42,7 +58,7 @@ int main(int argc, char *argv[]) {
 	size_t factory_idx = 0;
 
 	string line;
-	while (getline(infile, line)) {
+	while (getline(*instream, line)) {
 		istringstream iss(line);
 		double x = 0;
 		double y = 0;
@@ -78,40 +94,40 @@ int main(int argc, char *argv[]) {
 	vector<pair<size_t, size_t>> edges;
 	size_t a = 0;
 	size_t b = 0;
-	while (infile >> a >> b) {
+	while (*instream >> a >> b) {
 		edges.emplace_back(a - 1, b - 1);
 	}
 
 	auto routes = sssp_plane::sssp_plane(points, edges, factory_idx, convex_hull);
 
 	if (verbose_option) {
-		outfile << "Fence length: " << fence_length << '\n';
-		outfile << "Fence:";
+		*outstream << "Fence length: " << fence_length << '\n';
+		*outstream << "Fence:";
 		for (const auto &point : convex_hull) {
-			outfile << ' ' << point + 1;
+			*outstream << ' ' << point + 1;
 		}
-		outfile << '\n';
-		outfile << "Routes:\n";
+		*outstream << '\n';
+		*outstream << "Routes:\n";
 	} else {
-		outfile << fence_length << '\n';
+		*outstream << fence_length << '\n';
 		if (!convex_hull.empty()) {
-			outfile << convex_hull.front() + 1;
+			*outstream << convex_hull.front() + 1;
 		}
 		for (size_t i = 1; i < convex_hull.size(); i++) {
-			outfile << ' ' << convex_hull[i] + 1;
+			*outstream << ' ' << convex_hull[i] + 1;
 		}
-		outfile << '\n';
+		*outstream << '\n';
 	}
 	for (const auto &route : routes) {
 		if (verbose_option) {
-			outfile << "destination: " << route.destination + 1 << ", length: " << route.distance
-			        << ", path:";
+			*outstream << "destination: " << route.destination + 1 << ", length: " << route.distance
+			           << ", path:";
 		} else {
-			outfile << route.destination + 1 << ' ' << route.distance;
+			*outstream << route.destination + 1 << ' ' << route.distance;
 		}
 		for (const auto &point : route.path) {
-			outfile << ' ' << point + 1;
+			*outstream << ' ' << point + 1;
 		}
-		outfile << '\n';
+		*outstream << '\n';
 	}
 }

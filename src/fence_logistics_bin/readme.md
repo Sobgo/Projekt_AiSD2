@@ -9,7 +9,10 @@ fence length\
 indeces of points included in the fence\
 routes from factory to points on the fence one per line as: destination index, route length, vertices forming a route separated by spaces
 
-if parameter `-v` has been given explanatory information for a human reader will be also printed
+# Arguments
+first argument is input file, second argument is output file\
+instead of filename you can enter `--` to use stdio instead of file\
+if parameter `-v` has been given explanatory information for a human reader will also be printed
 
 # Example
 `in.txt`:

@@ -5,6 +5,10 @@ end of file
 # Output format
 resulting pairs one per line
 
+# Arguments
+first argument is input file, second argument is output file\
+instead of filename you can enter `--` to use stdio instead of file
+
 # Example
 `in.txt`:
 ```
