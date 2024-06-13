@@ -57,7 +57,13 @@ Wynikowa strona internetowa powstanie w katalogu `build/docs/html`
 
 ## sprawozdanie
 
+Wymaga `biber`
+
 ```bash
 cd report
 latexmk -pdf report.tex
 ```
+
+## AI
+Github Copilot był używany do generowania trywialnych szczegółów implementacyjnych
+i niektórych testów.
