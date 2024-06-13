@@ -97,9 +97,14 @@ HuffmanCode generate_huffman_code(const std::string &text) {
 	int prevLen = 0;
 	for (auto &pair : sortedCodes) {
 		const int len = pair.second.length();
+		if (prevLen == 0) {
+			huffmanCode[pair.first] = {code, len};
+			prevLen = len;
+			continue;
+		}
+		code++;
 		code <<= (len - prevLen);
 		huffmanCode[pair.first] = {code, len};
-		code++;
 		prevLen = len;
 	}
 
