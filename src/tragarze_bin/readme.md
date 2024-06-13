@@ -1,15 +1,17 @@
-# Input format
+# Tragarze cli
+
+## Input format
 pairs one per line as index of left element and index of right element separated by a space (indexing seperate)\
 end of file
 
-# Output format
+## Output format
 resulting pairs one per line
 
-# Arguments
+## Arguments
 first argument is input file, second argument is output file\
 instead of filename you can enter `--` to use stdio instead of file
 
-# Example
+## Example
 `in.txt`:
 ```
 1 1
