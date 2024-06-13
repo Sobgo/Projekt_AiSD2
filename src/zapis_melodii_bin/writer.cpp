@@ -93,6 +93,10 @@ int main(int argc, char *argv[]) {
 
 		for (istreambuf_iterator<char> it(*instream); it != istreambuf_iterator<char>(); ++it) {
 			const char c = *it;
+			if (c < 0 || c >= 127) {
+				cerr << "Error: input file contains non-ASCII characters or \\x7F\n";
+				return 1;
+			}
 			if (c == '\r') {
 				continue;
 			}
