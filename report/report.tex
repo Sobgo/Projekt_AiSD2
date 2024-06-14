@@ -1,0 +1,124 @@
+\documentclass{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+
+\usepackage{csquotes}
+
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{url}
+
+\usepackage[dvipsnames]{xcolor}
+\hypersetup{
+colorlinks=true,
+linkcolor=BrickRed,
+citecolor=Green,
+urlcolor=blue,
+frenchlinks=true,
+pdftitle={Atak z trzeciego wymiaru},
+pdfpagemode=FullScreen,
+}
+
+\usepackage[backend=biber, sorting=ynt]{biblatex}
+\addbibresource{bibliography.bib}
+
+\title{Atak z trzeciego wymiaru \\\large Sprawozdanie z projektu}
+\author{Mikołaj Juda \and Mateusz Sobkowiak \and Paulina Grabowska}
+\date{2024}
+
+\begin{document}
+\maketitle
+
+\section{Architektura}
+Problemy z wymagań projektu podzieliliśmy na podproblemy, w większości
+rozwiązywalne istniejącymi algorytmami.
+Rozwiązanie każdego podproblemu jest zaimplementowane jako biblioteka,
+która jest wykorzystywana przez program zapewniający interfejs użytkownika
+i minimalną logikę łączącą podproblemy. Pozwala to na proste testowanie
+i umożliwia łatwe wprowadzenie wielu interfejsów, na przykład
+tekstowy interfejs do użycia przez zewnętrzne programy i interfejs graficzny dla człowieka.
+
+\section{Przepływ pracy}
+Do organizacji pracy wykorzystywaliśmy narzędzia dostępne w serwisie GitHub.
+
+\noindent Przydzielanie i śledzenie zadań realizowaliśmy na tablicy Kanban w GitHub Projects.
+
+\noindent Kod rozwiązujący podproblemy był rozwijany na osobnych gałęziach,
+i łączony z główną gałęzią używając pull requestów po recenzji przez wszystkich członków zespołu.
+Używaliśmy też GitHub Actions do automatycznego uruchamiania lintera i testów.
+
+\section{Rozwiązania problemów}
+
+\subsection{Budowa płotu}
+
+\subsubsection{Długość płotu}
+Do wyznaczania otoczki wypukłej wykorzystaliśmy algorytm Grahama.
+
+\noindent Testy jednostkowe zawierają sprawdzenie poprawności wyniku dla przypadków krańcowych
+i dla danych losowych w oparciu o sprawdzenie wypukłości i zawierania wszystkich punktów
+używając pomocniczych funkcji.
+\subsubsection{Parowanie tragarzy}
+Parowanie tragarzy zrealizowaliśmy jako znajdowanie największego skojarzenia w grafie dwudzielnym.
+Rozwiązanie zaimplementowaliśmy naiwnie używając algorytmu Edmondsa-Karpa ze względu na prostotę implementacji.
+Przy złożoności \(\mathcal{O}(|V||E|)\)\cite{cs6820matchingnotes}
+i fakcie, że algorytm uruchamiany jest tylko raz na początku planowania budowy,
+uznaliśmy, że nasze rozwiązanie jest wystarczająco wydajne,
+mimo istnienia algorytmów o lepszej złożoności obliczeniowej (np. Hopcrofta-Karpa).
+
+\noindent Testy jednostkowe sprawdzają jedynie czy wynik jest maksymalny,
+gdyż nie ma prostej metody na zweryfikowanie czy jest największy
+bez obliczania rozwiązania problemu.
+\subsubsection{Wyznaczanie dróg}
+Wyznaczanie najkrótszych dróg z fabryki do miejsc budowy płotu zrealizowaliśmy
+jako znajdowanie najkrótszej ścieżki z pojedynczego źródła
+i zaimplementowaliśmy używając algorytmu Dijkstry z implementacją kolejki na kopcu.
+Jest to klasyczny sposób rozwiązania tego problemu i dla rozważanych rozmiarów danych
+jest niewiele mniej wydajny od bardziej skomplikowanych rozwiązań
+o lepszej złożoności obliczeniowej.
+
+\noindent Testy jednostkowe sprawdzają poprawność wyniku
+na podstawie porównania długości ścieżek z wcześniej wyznaczonymi poprawnymi wartościami
+i przejściu wyznaczonymi ścieżkami sprawdzając prawidłowość.
+
+\subsection{Zapisywanie melodii}
+\subsubsection{Zamiana fragmentów}
+Wyszukiwanie słów do zamiany w tekście zaimplementowaliśmy algorytmem Aho-Corasicka
+ze względu na możliwość wyszukiwania wielu wzorców jednocześnie.
+Ma także najlepszą złożoność obliczeniową spośród algorytmów do tego zdolnych.
+
+\noindent Testy jednostkowe sprawdzają poprawność wyniku
+dla przypadków prostych, granicznych i losowych na podstawie porównania
+z wynikiem algorytmu naiwnego.
+\subsubsection{Kompresja}
+Do kompresji wykorzystaliśmy kodowanie Huffmana ze względu na prostotę implementacji.
+Jest to rozwiązanie wystarczająco wydajne
+do jednorazowego zapisywania danych w celach archiwalnych.
+
+\noindent Testy jednostkowe sprawdzają poprawność kompresji i dekompresji
+przykładowych tekstów, tekstów losowych oraz przypadków granicznych.
+
+\subsection{Patrole strażników}
+Znajdowanie optymalnej trasy dla strażników, która minimializuje ilość odsłuchań melodii
+zaimplementowaliśmy algorytmem dynamicznym.
+\subsubsection{Dowód poprawności}
+Funkcja opiera się o stan \(dp[i]\), który reprezentuje minimalną liczbę odsłuchań
+melodii potrzebną do dotarcia do punktu \(i\). Początkowo dla \(dp[0]\) jest on ustawiony na 0,
+bo zaczynamy w punkcie 0 bez odsłuchań melodii.
+Dla każdego punktu \(i\) funkcja sprawdza możliwe punkty \(j\), do których można dotrzeć z punktu \(i\).
+Poziom jasności punktu \(j\) powoduje aktualizację \(dp[j]\) zgodnie z warunkami. Za pomocą tablicy \(previous\)
+śledzone są poprzednie punkty na optymalnej ścieżce. Każdy krok wstecz prowadzi do punktu, z którego
+przybyliśmy, co gwarantuje, że odtworzona ścieżka jest zgodna z minimalnymi odsłuchami melodii
+zapisanymi w \(dp\). Zaimplementowana w ten sposób funkcja gwarantuje znalezienie optymalnego rozwiązania
+przy niskiej złożoności obliczeniowej \(\mathcal{O}(n \cdot maxBeforeStop)\) i pamięciowej \(\mathcal{O}(n)\),
+gdzie \(n\) to ilość punktów do obejścia, a \(maxBeforeStop\) to
+maksymalna liczba punktów po których strażnik musi się zatrzymać.
+
+\noindent Testy jednostkowe sprawdzają poprawność działania algorytmu porównując wynik
+do wcześniej ustalonego poprawnego wyniku oraz do wyniku algorytmu naiwnego.
+\section{Dokumentacja}
+Dokumentacja jest generowana przez Doxygen na podstawie komentarzy w kodzie.
+
+\printbibliography[heading=bibnumbered]
+\end{document}

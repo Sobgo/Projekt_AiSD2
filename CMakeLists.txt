@@ -8,9 +8,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 enable_testing()
 
-add_subdirectory(src)
 add_subdirectory(test)
 
-add_executable(Projekt_AiSD2 main.cpp)
-target_sources(Projekt_AiSD2 PRIVATE main.cpp)
-#target_link_libraries(Projekt_AiSD2 PRIVATE libs_here)
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+add_subdirectory(src)
+
+add_subdirectory(docs)

@@ -1,4 +1,9 @@
 #include <catch2/catch_test_macros.hpp>
+#include <cstddef>
+#include <ctime>
+#include <random>
+#include <set>
+#include <utility>
 #include <vector>
 
 #include "../src/bipartite_maximum_matching_lib/bipartite_maximum_matching.hpp"
@@ -6,6 +11,9 @@
 // we want maximum matching but it's hard to check easily
 bool is_maximal_matching(const std::vector<std::pair<size_t, size_t>> &matching,
                          const std::vector<std::pair<size_t, size_t>> &edges);
+
+std::vector<std::pair<size_t, size_t>>
+generate_random_bipartite_graph(size_t left_num, size_t right_num, size_t edge_num);
 
 TEST_CASE("bipartite_maximum_matching empty", "[bipartite_maximum_matching]") {
 	std::vector<std::pair<size_t, size_t>> in = {};
@@ -41,20 +49,31 @@ TEST_CASE("bipartite_maximum_matching lista3zad1", "[bipartite_maximum_matching]
 	REQUIRE(is_maximal_matching(result, in));
 }
 
-TEST_CASE("bipartite_maximum_matching medium", "[bipartite_maximum_matching]") {
-	std::vector<std::pair<size_t, size_t>> in = {
-#include "input_data/bipartite_maximum_matching_medium.txt"
-	};
+TEST_CASE("bipartite_maximum_matching randomized medium", "[bipartite_maximum_matching]") {
+	std::vector<std::pair<size_t, size_t>> in = generate_random_bipartite_graph(100, 100, 50);
 	auto result = bipartite_maximum_matching::bipartite_maximum_matching(in);
 	REQUIRE(is_maximal_matching(result, in));
 }
 
-TEST_CASE("bipartite_maximum_matching large", "[bipartite_maximum_matching]") {
-	std::vector<std::pair<size_t, size_t>> in = {
-#include "input_data/bipartite_maximum_matching_large.txt"
-	};
+TEST_CASE("bipartite_maximum_matching randomized large", "[bipartite_maximum_matching]") {
+	std::vector<std::pair<size_t, size_t>> in = generate_random_bipartite_graph(500, 500, 250);
 	auto result = bipartite_maximum_matching::bipartite_maximum_matching(in);
 	REQUIRE(is_maximal_matching(result, in));
+}
+
+std::vector<std::pair<size_t, size_t>>
+generate_random_bipartite_graph(size_t left_num, size_t right_num, size_t edge_num) {
+	std::set<std::pair<size_t, size_t>> edges;
+
+	std::default_random_engine gen(time(NULL));
+	std::uniform_int_distribution<size_t> left_dist(0, left_num - 1);
+	std::uniform_int_distribution<size_t> right_dist(0, right_num - 1);
+
+	while (edges.size() < edge_num) {
+		edges.insert({left_dist(gen), right_dist(gen)});
+	}
+
+	return std::vector<std::pair<size_t, size_t>>(edges.begin(), edges.end());
 }
 
 bool is_maximal_matching(const std::vector<std::pair<size_t, size_t>> &matching,

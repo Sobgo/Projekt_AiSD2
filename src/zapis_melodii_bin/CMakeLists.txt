@@ -1,0 +1,4 @@
+add_executable(zapis_melodii_write writer.cpp)
+target_link_libraries(zapis_melodii_write PRIVATE pattern_matching data_compression)
+add_executable(zapis_melodii_read reader.cpp)
+target_link_libraries(zapis_melodii_read PRIVATE data_compression)
