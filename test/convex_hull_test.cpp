@@ -39,7 +39,7 @@ SCENARIO("Convex Hull is calculated correctly") {
 
 		WHEN("Convex Hull is calculated") {
 			vector<size_t> hull = convex_hull::convex_hull(in);
-
+      
 			THEN("It is empty") { REQUIRE(hull.empty()); }
 		}
 	}

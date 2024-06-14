@@ -16,6 +16,7 @@ namespace bipartite_maximum_matching {
 
 int_fast8_t bfs(std::size_t start, std::vector<std::vector<int_fast8_t>> &graph,
                 std::vector<std::optional<size_t>> &parent, std::size_t end) {
+
 	std::queue<std::pair<size_t, int_fast8_t>> q;
 	parent.assign(parent.size(), std::nullopt);
 	q.emplace(start, std::numeric_limits<int_fast8_t>::max());
